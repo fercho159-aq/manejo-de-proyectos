@@ -8,7 +8,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "../data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { ArrowDown, ArrowRight, ArrowUp, CheckCircle, Circle, Dot, HelpCircle, XCircle } from "lucide-react";
+import { ArrowDown, ArrowRight, ArrowUp, CheckCircle, ChevronDown, ChevronRight, Circle, Dot, HelpCircle, XCircle } from "lucide-react";
+import { Button } from "../ui/button";
 
 const statuses = [
   { value: "To Do", label: "To Do", icon: Circle },
@@ -23,7 +24,12 @@ const priorities = [
   { value: "High", label: "High", icon: ArrowUp },
 ];
 
-export const columns: ColumnDef<Task>[] = [
+type ColumnsProps = {
+  onUpdateTask: (task: Task) => void;
+  onAddTask: (task: Task) => void;
+}
+
+export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Task>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -48,6 +54,25 @@ export const columns: ColumnDef<Task>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Title" />
     ),
+    cell: ({ row }) => {
+      const canExpand = row.getCanExpand();
+      const isExpanded = row.getIsExpanded();
+      return (
+        <div style={{ paddingLeft: `${row.depth * 2}rem` }} className="flex items-center gap-2">
+          {canExpand && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => row.toggleExpanded()}
+              className="h-6 w-6"
+            >
+              {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            </Button>
+          )}
+          <span>{row.original.title}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "assigneeId",
@@ -118,6 +143,6 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => <DataTableRowActions row={row} onUpdateTask={onUpdateTask} onAddTask={onAddTask} />,
   },
 ];

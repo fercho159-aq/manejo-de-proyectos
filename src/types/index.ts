@@ -15,6 +15,8 @@ export type Task = {
   assigneeId: string | null;
   estimatedDuration: number; // in hours
   actualDuration?: number; // in hours
+  parentId?: string | null;
+  subtasks?: Task[];
 };
 
 export type User = {
