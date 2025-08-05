@@ -6,6 +6,10 @@ export type Project = {
   dueDate: string;
 };
 
+export const taskAreas = ["Pautas", "Diseño web", "Creación de contenido"] as const;
+export type TaskArea = (typeof taskAreas)[number];
+
+
 export type Task = {
   id: string;
   title: string;
@@ -17,6 +21,7 @@ export type Task = {
   actualDuration?: number; // in hours
   parentId?: string | null;
   subtasks?: Task[];
+  area?: TaskArea;
 };
 
 export type User = {

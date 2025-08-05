@@ -75,6 +75,24 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
     },
   },
   {
+    accessorKey: "area",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Area" />
+    ),
+    cell: ({ row }) => {
+      const area = row.original.area;
+      if (!area) {
+        return <span className="text-muted-foreground">-</span>;
+      }
+      return (
+        <Badge variant="outline">{area}</Badge>
+      );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },
+  {
     accessorKey: "assigneeId",
     header: "Assignee",
     cell: ({ row }) => {

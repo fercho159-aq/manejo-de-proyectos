@@ -21,7 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Task, User } from "@/types";
+import { Task, User, taskAreas } from "@/types";
 import { users } from "@/lib/data";
 import { DialogFooter } from "../ui/dialog";
 
@@ -31,6 +31,7 @@ const formSchema = z.object({
   priority: z.enum(["Low", "Medium", "High"]),
   assigneeId: z.string().nullable(),
   estimatedDuration: z.coerce.number().min(0),
+  area: z.enum(taskAreas).optional(),
 });
 
 interface EditTaskFormProps {
@@ -48,6 +49,7 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
       priority: task.priority,
       assigneeId: task.assigneeId,
       estimatedDuration: task.estimatedDuration,
+      area: task.area,
     },
   });
 
@@ -126,12 +128,37 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
           />
         </div>
         <FormField
+            control={form.control}
+            name="area"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Area</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select an area" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {taskAreas.map(area => (
+                        <SelectItem key={area} value={area}>{area}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        <FormField
           control={form.control}
           name="assigneeId"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Assignee</FormLabel>
-              <Select onValueChange={(value) => field.onChange(value === "null" ? null : value)} defaultValue={field.value || "null"}>
+              <Select onValueChange={(value) => field.onChange(value === "null" ? null : value)} defaultValue={field.value ?? "null"}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select an assignee" />
