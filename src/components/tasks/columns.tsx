@@ -97,6 +97,25 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
     },
   },
   {
+    accessorKey: "projectId",
+    header: "Client",
+    cell: ({ row }) => {
+      const project: Project | undefined = projects.find(p => p.id === row.original.projectId);
+      if (!project) {
+        return <span className="text-muted-foreground">-</span>;
+      }
+      return (
+        <div className="flex items-center gap-2">
+          <span>{project.client}</span>
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => {
+      const project: Project | undefined = projects.find(p => p.id === row.getValue(id));
+      return value.includes(project?.client);
+    },
+  },
+  {
     accessorKey: "status",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />

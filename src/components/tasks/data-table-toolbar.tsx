@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, X } from "lucide-react";
 import { DataTableFacetedFilter } from "../data-table-faceted-filter";
-import { users } from "@/lib/data";
+import { users, projects } from "@/lib/data";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -23,6 +23,8 @@ const priorities = [
   { value: "Medium", label: "Medium" },
   { value: "High", label: "High" },
 ];
+
+const clients = projects.map(p => ({ value: p.client, label: p.client }));
 
 export function DataTableToolbar<TData>({
   table,
@@ -59,6 +61,13 @@ export function DataTableToolbar<TData>({
             column={table.getColumn("assigneeId")}
             title="Assignee"
             options={users.map(u => ({ value: u.id, label: u.name }))}
+          />
+        )}
+         {table.getColumn("projectId") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("projectId")}
+            title="Client"
+            options={clients}
           />
         )}
         {isFiltered && (
