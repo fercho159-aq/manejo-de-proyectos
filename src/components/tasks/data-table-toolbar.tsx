@@ -24,21 +24,22 @@ const priorities = [
   { value: "High", label: "High" },
 ];
 
-const clients = projects.map(p => ({ value: p.client, label: p.client }));
+const clients = [...new Set(projects.map(p => p.client))].map(c => ({ value: c, label: c }));
+
 
 export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const isFiltered = table.getState().columnFilters.length > 0 || table.getState().globalFilter.length > 0;
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
           placeholder="Filter tasks..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+          value={table.getState().globalFilter ?? ""}
           onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
+            table.setGlobalFilter(event.target.value)
           }
           className="h-9 w-[150px] lg:w-[250px]"
         />
@@ -73,7 +74,10 @@ export function DataTableToolbar<TData>({
         {isFiltered && (
           <Button
             variant="ghost"
-            onClick={() => table.resetColumnFilters()}
+            onClick={() => {
+              table.resetColumnFilters();
+              table.setGlobalFilter("");
+            }}
             className="h-9 px-2 lg:px-3"
           >
             Reset

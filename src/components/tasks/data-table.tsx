@@ -14,6 +14,8 @@ import {
   getSortedRowModel,
   useReactTable,
   ExpandedState,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
 } from "@tanstack/react-table";
 
 import {
@@ -27,6 +29,7 @@ import {
 import { DataTableToolbar } from "./data-table-toolbar";
 import { DataTablePagination } from "../data-table-pagination";
 import { Task } from "@/types";
+import { users, projects } from "@/lib/data";
 
 interface DataTableProps<TData extends Task, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,6 +49,7 @@ export function DataTable<TData extends Task, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [expanded, setExpanded] = React.useState<ExpandedState>({});
+  const [globalFilter, setGlobalFilter] = React.useState("");
 
   const table = useReactTable({
     data,
@@ -56,6 +60,7 @@ export function DataTable<TData extends Task, TValue>({
       rowSelection,
       columnFilters,
       expanded,
+      globalFilter,
     },
     getSubRows: (row) => row.subRows,
     onExpandedChange: setExpanded,
@@ -64,11 +69,41 @@ export function DataTable<TData extends Task, TValue>({
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
+    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    globalFilterFn: (row, columnId, filterValue) => {
+        const value = row.getValue(columnId) as string;
+        if (typeof value === 'string' && value.toLowerCase().includes(filterValue.toLowerCase())) {
+            return true;
+        }
+
+        const task = row.original as Task;
+        
+        // Search by assignee name
+        if (task.assigneeId) {
+            const assignee = users.find(u => u.id === task.assigneeId);
+            if (assignee && assignee.name.toLowerCase().includes(filterValue.toLowerCase())) {
+                return true;
+            }
+        }
+
+        // Search by client name
+        if (task.projectId) {
+            const project = projects.find(p => p.id === task.projectId);
+            if (project && project.client.toLowerCase().includes(filterValue.toLowerCase())) {
+                return true;
+            }
+        }
+        
+        // Default to title search if other fields don't match
+        return task.title.toLowerCase().includes(filterValue.toLowerCase());
+    },
   });
 
   return (
