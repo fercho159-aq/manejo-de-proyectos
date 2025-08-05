@@ -131,14 +131,14 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
           render={({ field }) => (
             <FormItem>
               <FormLabel>Assignee</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value || ""}>
+              <Select onValueChange={(value) => field.onChange(value === "null" ? null : value)} defaultValue={field.value || "null"}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select an assignee" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="">Unassigned</SelectItem>
+                  <SelectItem value="null">Unassigned</SelectItem>
                   {users.map((user: User) => (
                     <SelectItem key={user.id} value={user.id}>
                       {user.name}
