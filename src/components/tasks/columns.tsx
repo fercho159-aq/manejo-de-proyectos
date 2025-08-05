@@ -94,7 +94,9 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
   },
   {
     accessorKey: "assigneeId",
-    header: "Assignee",
+    header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Assignee" />
+    ),
     cell: ({ row }) => {
       const user: User | undefined = users.find(u => u.id === row.original.assigneeId);
       if (!user) {
@@ -111,12 +113,15 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
       );
     },
     filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
+      const user: User | undefined = users.find(u => u.id === row.getValue(id));
+      return user ? user.name.toLowerCase().includes(String(value).toLowerCase()) : false;
     },
   },
   {
     accessorKey: "projectId",
-    header: "Client",
+    header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Client" />
+    ),
     cell: ({ row }) => {
       const project: Project | undefined = projects.find(p => p.id === row.original.projectId);
       if (!project) {
@@ -130,7 +135,7 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
     },
     filterFn: (row, id, value) => {
       const project: Project | undefined = projects.find(p => p.id === row.getValue(id));
-      return value.includes(project?.client);
+      return project ? project.client.toLowerCase().includes(String(value).toLowerCase()) : false;
     },
   },
   {

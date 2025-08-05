@@ -30,6 +30,7 @@ import { DataTableToolbar } from "./data-table-toolbar";
 import { DataTablePagination } from "../data-table-pagination";
 import { Task } from "@/types";
 import { users, projects } from "@/lib/data";
+import { Input } from "../ui/input";
 
 interface DataTableProps<TData extends Task, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -77,33 +78,6 @@ export function DataTable<TData extends Task, TValue>({
     getExpandedRowModel: getExpandedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-    globalFilterFn: (row, columnId, filterValue) => {
-        const value = row.getValue(columnId) as string;
-        if (typeof value === 'string' && value.toLowerCase().includes(filterValue.toLowerCase())) {
-            return true;
-        }
-
-        const task = row.original as Task;
-        
-        // Search by assignee name
-        if (task.assigneeId) {
-            const assignee = users.find(u => u.id === task.assigneeId);
-            if (assignee && assignee.name.toLowerCase().includes(filterValue.toLowerCase())) {
-                return true;
-            }
-        }
-
-        // Search by client name
-        if (task.projectId) {
-            const project = projects.find(p => p.id === task.projectId);
-            if (project && project.client.toLowerCase().includes(filterValue.toLowerCase())) {
-                return true;
-            }
-        }
-        
-        // Default to title search if other fields don't match
-        return task.title.toLowerCase().includes(filterValue.toLowerCase());
-    },
   });
 
   return (
@@ -119,10 +93,23 @@ export function DataTable<TData extends Task, TValue>({
                     <TableHead key={header.id} style={{ width: header.getSize() !== 150 ? header.getSize() : undefined }}>
                       {header.isPlaceholder
                         ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                        : <div>
+                            {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                            )}
+                            {header.column.getCanFilter() ? (
+                                <div className="mt-2">
+                                    <Input
+                                        placeholder={`Filter...`}
+                                        value={(header.column.getFilterValue() as string) ?? ''}
+                                        onChange={(e) => header.column.setFilterValue(e.target.value)}
+                                        className="h-8"
+                                    />
+                                </div>
+                            ) : null}
+                        </div>
+                      }
                     </TableHead>
                   );
                 })}
