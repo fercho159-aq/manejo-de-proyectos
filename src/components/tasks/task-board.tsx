@@ -111,7 +111,10 @@ export function TaskBoard({ tasks, users, onUpdateTask }: TaskBoardProps) {
       return;
     }
 
-    if (source.droppableId === destination.droppableId) {
+    if (
+        source.droppableId === destination.droppableId &&
+        source.index === destination.index
+    ) {
       return; 
     }
 
@@ -135,7 +138,7 @@ export function TaskBoard({ tasks, users, onUpdateTask }: TaskBoardProps) {
     <DragDropContext onDragEnd={onDragEnd}>
         <div className="grid auto-cols-[minmax(280px,1fr)] grid-flow-col gap-4 overflow-x-auto pb-4">
         {userColumns.map(user => {
-            const userTasks = tasks.filter(task => (user.id === 'unassigned' ? task.assigneeId === null : task.assigneeId === user.id));
+            const userTasks = tasks.filter(task => (user.id === 'unassigned' ? task.assigneeId === null : task.assigneeId === user.id)  && !task.parentId);
             return (
             <Droppable droppableId={user.id} key={user.id}>
                 {(provided, snapshot) => (

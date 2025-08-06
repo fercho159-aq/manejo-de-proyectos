@@ -18,7 +18,7 @@ export default function TasksPage() {
   const onUpdateTask = (updatedTask: Task) => {
     setTasks(prevTasks => {
       return prevTasks.map(task => 
-        task.id === updatedTask.id ? { ...task, ...updatedTask } : task
+        task.id === updatedTask.id ? updatedTask : task
       );
     });
   };
