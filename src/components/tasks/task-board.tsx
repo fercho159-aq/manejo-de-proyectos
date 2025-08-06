@@ -53,7 +53,6 @@ const getPriority = (priorityValue: Task['priority']) => priorities.find(p => p.
 
 
 function TaskCard({ task, index, users, onUpdateTask }: { task: Task; index: number; users: User[]; onUpdateTask: (task: Task) => void }) {
-    const status = getStatus(task.status);
     const priority = getPriority(task.priority);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     
@@ -133,6 +132,7 @@ function TaskCard({ task, index, users, onUpdateTask }: { task: Task; index: num
 export function TaskBoard({ tasks, users, onUpdateTask, onAddTask }: TaskBoardProps) {
   const [isClient, setIsClient] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [defaultAssignee, setDefaultAssignee] = useState<string | null>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -169,13 +169,18 @@ export function TaskBoard({ tasks, users, onUpdateTask, onAddTask }: TaskBoardPr
     setIsAddDialogOpen(false);
   }
 
+  const handleOpenAddDialog = (assigneeId: string | null) => {
+    setDefaultAssignee(assigneeId);
+    setIsAddDialogOpen(true);
+  }
+
   const defaultNewTask: Partial<Task> = {
     id: `task-${Date.now()}`,
     title: '',
     projectId: projects[0]?.id || '',
     status: 'To Do',
     priority: 'Medium',
-    assigneeId: null,
+    assigneeId: defaultAssignee,
     estimatedDuration: 1,
   };
 
@@ -186,26 +191,7 @@ export function TaskBoard({ tasks, users, onUpdateTask, onAddTask }: TaskBoardPr
 
   return (
     <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-      <div className="flex justify-end mb-4">
-        <DialogTrigger asChild>
-          <Button size="sm" onClick={() => setIsAddDialogOpen(true)}>
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Añadir Tarea
-          </Button>
-        </DialogTrigger>
-      </div>
-       <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Añadir Nueva Tarea</DialogTitle>
-          </DialogHeader>
-          <EditTaskForm
-            task={defaultNewTask as Task}
-            onUpdateTask={handleAddTask} 
-            onClose={() => setIsAddDialogOpen(false)}
-            isAdding
-          />
-        </DialogContent>
-      <DragDropContext onDragEnd={onDragEnd}>
+       <DragDropContext onDragEnd={onDragEnd}>
           <div className="grid auto-cols-[minmax(280px,1fr)] grid-flow-col gap-4 overflow-x-auto pb-4">
           {userColumns.map(user => {
               const userTasks = tasks.filter(task => (user.id === 'unassigned' ? task.assigneeId === null : task.assigneeId === user.id)  && !task.parentId);
@@ -216,11 +202,11 @@ export function TaskBoard({ tasks, users, onUpdateTask, onAddTask }: TaskBoardPr
                           ref={provided.innerRef}
                           {...provided.droppableProps}
                           className={cn(
-                              "flex flex-col gap-4 rounded-lg bg-muted/50 p-3 transition-colors",
+                              "flex flex-col gap-2 rounded-lg bg-muted/50 p-3 transition-colors",
                               snapshot.isDraggingOver ? "bg-muted" : "bg-muted/50"
                           )}
                       >
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 px-1">
                           {user.id !== 'unassigned' && (
                               <Avatar className="h-7 w-7 border">
                                   <AvatarImage src={user.avatar} />
@@ -235,12 +221,16 @@ export function TaskBoard({ tasks, users, onUpdateTask, onAddTask }: TaskBoardPr
                                   <TaskCard key={task.id} task={task} index={index} users={users} onUpdateTask={onUpdateTask} />
                               ))}
                               {provided.placeholder}
-                              {userTasks.length === 0 && !snapshot.isDraggingOver && (
-                                  <div className="flex h-24 items-center justify-center rounded-md border-2 border-dashed border-muted-foreground/30">
-                                      <p className="text-xs text-muted-foreground">Arrastra tareas aquí</p>
-                                  </div>
-                              )}
                           </div>
+                           <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="w-full mt-2 justify-start"
+                              onClick={() => handleOpenAddDialog(user.id === 'unassigned' ? null : user.id)}
+                            >
+                              <PlusCircle className="mr-2 h-4 w-4" />
+                              Añadir Tarea
+                            </Button>
                       </div>
                   )}
               </Droppable>
@@ -248,6 +238,17 @@ export function TaskBoard({ tasks, users, onUpdateTask, onAddTask }: TaskBoardPr
           })}
           </div>
       </DragDropContext>
+       <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Añadir Nueva Tarea</DialogTitle>
+          </DialogHeader>
+          <EditTaskForm
+            task={defaultNewTask as Task}
+            onUpdateTask={handleAddTask} 
+            onClose={() => setIsAddDialogOpen(false)}
+            isAdding
+          />
+        </DialogContent>
     </Dialog>
   );
 }

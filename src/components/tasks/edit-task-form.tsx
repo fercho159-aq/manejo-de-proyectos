@@ -29,6 +29,7 @@ import { Calendar } from "../ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import React from "react";
 
 const formSchema = z.object({
   title: z.string().min(1, "El título es requerido"),
@@ -62,6 +63,20 @@ export function EditTaskForm({ task, onUpdateTask, onClose, isAdding = false }: 
       visitDate: task.visitDate,
     },
   });
+
+  React.useEffect(() => {
+    form.reset({
+      title: task.title ?? '',
+      projectId: task.projectId ?? '',
+      status: task.status ?? 'To Do',
+      priority: task.priority ?? 'Medium',
+      assigneeId: task.assigneeId ?? null,
+      estimatedDuration: task.estimatedDuration ?? 0,
+      area: task.area,
+      visitDate: task.visitDate,
+    });
+  }, [task, form]);
+
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const taskToSave: Task = {
@@ -197,7 +212,7 @@ export function EditTaskForm({ task, onUpdateTask, onClose, isAdding = false }: 
           render={({ field }) => (
             <FormItem>
               <FormLabel>Asignado a</FormLabel>
-              <Select onValueChange={(value) => field.onChange(value === "null" ? null : value)} defaultValue={field.value ?? "null"}>
+              <Select onValueChange={(value) => field.onChange(value === "null" ? null : value)} value={field.value ?? "null"}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Seleccione un usuario" />
