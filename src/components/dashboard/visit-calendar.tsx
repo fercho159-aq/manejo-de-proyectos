@@ -1,13 +1,17 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Calendar } from "@/components/ui/calendar";
 import { tasks, projects } from "@/lib/data";
 import { es } from 'date-fns/locale';
 
 export function VisitCalendar() {
-    const [date, setDate] = useState<Date | undefined>(new Date());
+    const [date, setDate] = useState<Date | undefined>(undefined);
+
+    useEffect(() => {
+        setDate(new Date());
+    }, []);
 
     const visitDates = tasks.filter(t => t.visitDate).map(t => t.visitDate!);
 
