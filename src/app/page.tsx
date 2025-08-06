@@ -11,8 +11,8 @@ export default function DashboardPage() {
       <Header title="Panel de control" />
       <div className="flex-1 space-y-6 p-4 pt-6 md:p-8">
         <OverviewCards />
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <Card className="lg:col-span-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <Card className="lg:col-span-1">
             <CardHeader>
               <CardTitle>Resumen de Proyectos</CardTitle>
             </CardHeader>
