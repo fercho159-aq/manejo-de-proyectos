@@ -20,10 +20,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { Task, User, taskAreas } from "@/types";
 import { users } from "@/lib/data";
 import { DialogFooter } from "../ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "../ui/calendar";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 const formSchema = z.object({
   title: z.string().min(1, "El título es requerido"),
@@ -32,6 +37,7 @@ const formSchema = z.object({
   assigneeId: z.string().nullable(),
   estimatedDuration: z.coerce.number().min(0),
   area: z.enum(taskAreas).optional(),
+  visitDate: z.date().nullable().optional(),
 });
 
 interface EditTaskFormProps {
@@ -50,6 +56,7 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
       assigneeId: task.assigneeId,
       estimatedDuration: task.estimatedDuration,
       area: task.area,
+      visitDate: task.visitDate,
     },
   });
 
@@ -186,6 +193,48 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
               <FormControl>
                 <Input type="number" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="visitDate"
+          render={({ field }) => (
+            <FormItem className="flex flex-col">
+              <FormLabel>Fecha de Visita</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full pl-3 text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      {field.value ? (
+                        format(field.value, "PPP", { locale: es })
+                      ) : (
+                        <span>Seleccione una fecha</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={field.value ?? undefined}
+                    onSelect={(date) => field.onChange(date ?? null)}
+                    disabled={(date) =>
+                      date < new Date(new Date().setHours(0,0,0,0))
+                    }
+                    initialFocus
+                    locale={es}
+                  />
+                </PopoverContent>
+              </Popover>
               <FormMessage />
             </FormItem>
           )}

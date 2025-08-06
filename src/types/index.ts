@@ -22,6 +22,7 @@ export type Task = {
   parentId?: string | null;
   subtasks?: Task[];
   area?: TaskArea;
+  visitDate?: Date | null;
 };
 
 export type User = {

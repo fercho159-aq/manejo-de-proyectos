@@ -14,7 +14,7 @@ const workloadData = users.map(user => {
 
 export function WorkloadChart() {
   return (
-    <ResponsiveContainer width="100%" height={350}>
+    <ResponsiveContainer width="100%" height={250}>
       <BarChart data={workloadData}>
         <XAxis
           dataKey="name"

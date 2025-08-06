@@ -1,5 +1,6 @@
 import { OverviewCards } from '@/components/dashboard/overview-cards';
 import { ProjectList } from '@/components/dashboard/project-list';
+import { VisitCalendar } from '@/components/dashboard/visit-calendar';
 import { WorkloadChart } from '@/components/dashboard/workload-chart';
 import { Header } from '@/components/layout/header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -19,14 +20,24 @@ export default function DashboardPage() {
               <ProjectList />
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Carga de Trabajo del Equipo</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <WorkloadChart />
-            </CardContent>
-          </Card>
+          <div className="flex flex-col gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Próximas Visitas</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <VisitCalendar />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Carga de Trabajo del Equipo</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <WorkloadChart />
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
