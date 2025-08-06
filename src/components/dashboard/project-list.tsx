@@ -41,7 +41,7 @@ export function ProjectList() {
               </Badge>
             </TableCell>
             <TableCell className="text-right">
-              {format(new Date(project.dueDate), 'PPP')}
+              {project.dueDate ? format(new Date(project.dueDate), 'PPP') : '-'}
             </TableCell>
           </TableRow>
         ))}
