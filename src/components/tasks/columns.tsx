@@ -10,6 +10,7 @@ import { DataTableRowActions } from "./data-table-row-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ArrowDown, ArrowRight, ArrowUp, CheckCircle, ChevronDown, ChevronRight, Circle, Dot, HelpCircle, XCircle } from "lucide-react";
 import { Button } from "../ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 const statuses = [
   { value: "To Do", label: "Por Hacer", icon: Circle },
@@ -145,12 +146,36 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
     ),
     cell: ({ row }) => {
       const status = statuses.find(s => s.value === row.getValue("status"));
+
       if (!status) return null;
+      
       return (
-        <div className="flex items-center">
-          <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-          <span>{status.label}</span>
-        </div>
+        <Select 
+          value={status.value} 
+          onValueChange={(value) => {
+            onUpdateTask({
+              ...row.original,
+              status: value as Task['status'],
+            })
+          }}
+        >
+          <SelectTrigger className="w-40 capitalize">
+            <div className="flex items-center">
+              <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+              <SelectValue placeholder="Seleccionar estado" />
+            </div>
+          </SelectTrigger>
+          <SelectContent>
+            {statuses.map(s => (
+              <SelectItem key={s.value} value={s.value} className="capitalize">
+                 <div className="flex items-center">
+                  <s.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                  <span>{s.label}</span>
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       );
     },
     filterFn: (row, id, value) => {
