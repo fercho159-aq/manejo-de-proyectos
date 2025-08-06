@@ -100,18 +100,50 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
         <DataTableColumnHeader column={column} title="Asignado a" />
     ),
     cell: ({ row }) => {
-      const user: User | undefined = users.find(u => u.id === row.original.assigneeId);
-      if (!user) {
-        return <span className="text-muted-foreground">Sin asignar</span>;
-      }
+      const user = users.find(u => u.id === row.original.assigneeId);
+      
       return (
-        <div className="flex items-center gap-2">
-          <Avatar className="h-6 w-6">
-            <AvatarImage src={user.avatar} />
-            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <span>{user.name}</span>
-        </div>
+        <Select 
+          value={row.original.assigneeId ?? 'null'} 
+          onValueChange={(value) => {
+            onUpdateTask({
+              ...row.original,
+              assigneeId: value === 'null' ? null : value,
+            })
+          }}
+        >
+          <SelectTrigger className="w-48">
+            <SelectValue asChild>
+                <div className="flex items-center gap-2">
+                {user ? (
+                    <>
+                    <Avatar className="h-6 w-6">
+                        <AvatarImage src={user.avatar} />
+                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <span>{user.name}</span>
+                    </>
+                ) : (
+                    <span className="text-muted-foreground">Sin asignar</span>
+                )}
+                </div>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="null">Sin asignar</SelectItem>
+            {users.map(u => (
+              <SelectItem key={u.id} value={u.id}>
+                 <div className="flex items-center gap-2">
+                    <Avatar className="h-6 w-6">
+                        <AvatarImage src={u.avatar} />
+                        <AvatarFallback>{u.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <span>{u.name}</span>
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       );
     },
     filterFn: (row, id, value) => {
@@ -177,7 +209,7 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
           <SelectContent>
             {statuses.map(s => (
               <SelectItem key={s.value} value={s.value} className="capitalize">
-                 <div className="flex items-center">
+                 <div className="flex items-center gap-2">
                   <s.icon className="mr-2 h-4 w-4 text-muted-foreground" />
                   <span>{s.label}</span>
                 </div>
