@@ -5,8 +5,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 
 export const metadata: Metadata = {
-  title: 'Maw soluciones Dashboard',
-  description: 'Gestiona tus proyectos y tareas eficientemente.',
+  title: 'Seguimiento Pendientes Maw Soluciones',
+  description: 'Gestiona tus proyectos y tareas eficientemente con Maw Soluciones.',
 };
 
 export default function RootLayout({
