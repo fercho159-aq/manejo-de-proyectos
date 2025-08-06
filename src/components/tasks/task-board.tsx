@@ -140,7 +140,7 @@ export function TaskBoard({ tasks, users, onUpdateTask }: TaskBoardProps) {
         {userColumns.map(user => {
             const userTasks = tasks.filter(task => (user.id === 'unassigned' ? task.assigneeId === null : task.assigneeId === user.id)  && !task.parentId);
             return (
-            <Droppable droppableId={user.id} key={user.id} isDropDisabled={false}>
+            <Droppable droppableId={user.id} key={user.id} isDropDisabled={false} isCombineEnabled={false}>
                 {(provided, snapshot) => (
                     <div
                         ref={provided.innerRef}
