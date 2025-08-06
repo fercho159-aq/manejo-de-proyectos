@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ArrowDown, ArrowRight, ArrowUp, CheckCircle, ChevronDown, ChevronRight, Circle, Dot, HelpCircle, XCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { cn } from "@/lib/utils";
 
 const statuses = [
   { value: "To Do", label: "Por Hacer", icon: Circle },
@@ -161,8 +162,13 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
             })
           }}
         >
-          <SelectTrigger className="w-40 capitalize">
-            <div className="flex items-center">
+          <SelectTrigger className={cn("w-40 capitalize", {
+            'text-yellow-600 border-yellow-300 focus:ring-yellow-500': status.value === 'In Progress',
+            'text-blue-600 border-blue-300 focus:ring-blue-500': status.value === 'In Review',
+            'text-green-600 border-green-300 focus:ring-green-500': status.value === 'Done',
+          })}>
+            <div className="flex items-center gap-2">
+              <status.icon className="h-4 w-4" />
               <SelectValue placeholder="Seleccionar estado" />
             </div>
           </SelectTrigger>
