@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -36,16 +37,16 @@ export function VisitCalendar() {
                     }
                 }}
             />
-            <div className="flex-1">
-                <h3 className="mb-2 text-lg font-semibold">
+            <div className="flex-1 min-w-0">
+                <h3 className="mb-2 text-lg font-semibold truncate">
                     Visitas para {date ? date.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : '...'}
                 </h3>
                 {tasksForSelectedDate.length > 0 ? (
                     <ul className="space-y-2">
                         {tasksForSelectedDate.map(task => (
                            <li key={task.id} className="rounded-md border p-2 text-sm">
-                               <p className="font-semibold">{task.title}</p>
-                               <p className="text-muted-foreground">Cliente: {getClientName(task.projectId)}</p>
+                               <p className="font-semibold truncate">{task.title}</p>
+                               <p className="text-muted-foreground truncate">Cliente: {getClientName(task.projectId)}</p>
                            </li>
                         ))}
                     </ul>
