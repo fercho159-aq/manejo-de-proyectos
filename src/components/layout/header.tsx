@@ -14,7 +14,7 @@ export function Header({ title }: HeaderProps) {
       </div>
       <Avatar>
         <AvatarImage src="https://placehold.co/100x100.png" alt="User Avatar" />
-        <AvatarFallback>TW</AvatarFallback>
+        <AvatarFallback>MS</AvatarFallback>
       </Avatar>
     </header>
   );
