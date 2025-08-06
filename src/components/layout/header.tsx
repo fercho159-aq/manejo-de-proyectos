@@ -1,5 +1,4 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type HeaderProps = {
   title: string;
@@ -12,10 +11,6 @@ export function Header({ title }: HeaderProps) {
         <SidebarTrigger className="md:hidden" />
         <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
       </div>
-      <Avatar>
-        <AvatarImage src="https://placehold.co/100x100.png" alt="User Avatar" />
-        <AvatarFallback>MS</AvatarFallback>
-      </Avatar>
     </header>
   );
 }
