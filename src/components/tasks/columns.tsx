@@ -12,16 +12,16 @@ import { ArrowDown, ArrowRight, ArrowUp, CheckCircle, ChevronDown, ChevronRight,
 import { Button } from "../ui/button";
 
 const statuses = [
-  { value: "To Do", label: "To Do", icon: Circle },
-  { value: "In Progress", label: "In Progress", icon: Dot },
-  { value: "In Review", label: "In Review", icon: HelpCircle },
-  { value: "Done", label: "Done", icon: CheckCircle },
+  { value: "To Do", label: "Por Hacer", icon: Circle },
+  { value: "In Progress", label: "En Progreso", icon: Dot },
+  { value: "In Review", label: "En Revisión", icon: HelpCircle },
+  { value: "Done", label: "Hecho", icon: CheckCircle },
 ];
 
 const priorities = [
-  { value: "Low", label: "Low", icon: ArrowDown },
-  { value: "Medium", label: "Medium", icon: ArrowRight },
-  { value: "High", label: "High", icon: ArrowUp },
+  { value: "Low", label: "Baja", icon: ArrowDown },
+  { value: "Medium", label: "Media", icon: ArrowRight },
+  { value: "High", label: "Alta", icon: ArrowUp },
 ];
 
 type ColumnsProps = {
@@ -36,14 +36,14 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+        aria-label="Seleccionar todo"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
+        aria-label="Seleccionar fila"
       />
     ),
     enableSorting: false,
@@ -52,7 +52,7 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
   {
     accessorKey: "title",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+      <DataTableColumnHeader column={column} title="Título" />
     ),
     cell: ({ row }) => {
       const canExpand = row.getCanExpand();
@@ -77,7 +77,7 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
   {
     accessorKey: "area",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Area" />
+      <DataTableColumnHeader column={column} title="Área" />
     ),
     cell: ({ row }) => {
       const area = row.original.area;
@@ -95,12 +95,12 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
   {
     accessorKey: "assigneeId",
     header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Assignee" />
+        <DataTableColumnHeader column={column} title="Asignado a" />
     ),
     cell: ({ row }) => {
       const user: User | undefined = users.find(u => u.id === row.original.assigneeId);
       if (!user) {
-        return <span className="text-muted-foreground">Unassigned</span>;
+        return <span className="text-muted-foreground">Sin asignar</span>;
       }
       return (
         <div className="flex items-center gap-2">
@@ -120,7 +120,7 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
   {
     accessorKey: "projectId",
     header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Client" />
+        <DataTableColumnHeader column={column} title="Cliente" />
     ),
     cell: ({ row }) => {
       const project: Project | undefined = projects.find(p => p.id === row.original.projectId);
@@ -141,7 +141,7 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
   {
     accessorKey: "status",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title="Estado" />
     ),
     cell: ({ row }) => {
       const status = statuses.find(s => s.value === row.getValue("status"));
@@ -160,7 +160,7 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
   {
     accessorKey: "priority",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Priority" />
+      <DataTableColumnHeader column={column} title="Prioridad" />
     ),
     cell: ({ row }) => {
       const priority = priorities.find(p => p.value === row.getValue("priority"));
@@ -179,7 +179,7 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
   {
     accessorKey: "estimatedDuration",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Duration (h)" />
+      <DataTableColumnHeader column={column} title="Duración (h)" />
     ),
     cell: ({ row }) => `${row.original.estimatedDuration}h`,
   },

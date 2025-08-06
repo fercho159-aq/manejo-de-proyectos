@@ -17,14 +17,14 @@ export const columns: ColumnDef<User>[] = [
       <Checkbox
         checked={table.getIsAllPageRowsSelected()}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+        aria-label="Seleccionar todo"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
+        aria-label="Seleccionar fila"
       />
     ),
     enableSorting: false,
@@ -33,7 +33,7 @@ export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="User" />
+      <DataTableColumnHeader column={column} title="Usuario" />
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-3">
@@ -50,27 +50,30 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     id: "workload",
-    header: "Workload",
+    header: "Carga de Trabajo",
     cell: ({ row }) => {
         const userTasks = tasks.filter(t => t.assigneeId === row.original.id && t.status !== 'Done');
         const totalHours = userTasks.reduce((acc, t) => acc + t.estimatedDuration, 0);
-        return `${totalHours}h (${userTasks.length} tasks)`;
+        return `${totalHours}h (${userTasks.length} tareas)`;
     }
   },
   {
     accessorKey: "availability",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Availability" />
+      <DataTableColumnHeader column={column} title="Disponibilidad" />
     ),
-    cell: ({ row }) => (
-        <Badge variant="outline" className={cn({
-            'border-green-500 text-green-600': row.original.availability === 'Available',
-            'border-yellow-500 text-yellow-600': row.original.availability === 'Busy',
-            'border-red-500 text-red-600': row.original.availability === 'Unavailable',
-        })}>
-            {row.original.availability}
-        </Badge>
-    )
+    cell: ({ row }) => {
+        const availabilityText = row.original.availability === 'Available' ? 'Disponible' : row.original.availability === 'Busy' ? 'Ocupado' : 'No disponible';
+        return (
+            <Badge variant="outline" className={cn({
+                'border-green-500 text-green-600': row.original.availability === 'Available',
+                'border-yellow-500 text-yellow-600': row.original.availability === 'Busy',
+                'border-red-500 text-red-600': row.original.availability === 'Unavailable',
+            })}>
+                {availabilityText}
+            </Badge>
+        )
+    }
   },
   {
     id: "actions",

@@ -32,7 +32,7 @@ export default function TasksPage() {
 
   return (
     <div className="flex h-full flex-col">
-      <Header title="Tasks" />
+      <Header title="Tareas" />
       <div className="flex-1 space-y-6 p-4 pt-6 md:p-8">
         <DataTable columns={columns({ onUpdateTask, onAddTask })} data={tasksWithSubtasks} onUpdateTask={onUpdateTask} onAddTask={onAddTask} />
       </div>

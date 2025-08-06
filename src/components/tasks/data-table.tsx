@@ -101,7 +101,7 @@ export function DataTable<TData extends Task, TValue>({
                             {header.column.getCanFilter() ? (
                                 <div className="mt-2">
                                     <Input
-                                        placeholder={`Filter...`}
+                                        placeholder={`Filtrar...`}
                                         value={(header.column.getFilterValue() as string) ?? ''}
                                         onChange={(e) => header.column.setFilterValue(e.target.value)}
                                         className="h-8"
@@ -139,7 +139,7 @@ export function DataTable<TData extends Task, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  No hay resultados.
                 </TableCell>
               </TableRow>
             )}

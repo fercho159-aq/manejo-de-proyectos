@@ -26,18 +26,18 @@ export function DataTableRowActions<TData>({
           className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
         >
           <MoreHorizontal className="h-4 w-4" />
-          <span className="sr-only">Open menu</span>
+          <span className="sr-only">Abrir menú</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem>
           <Pen className="mr-2 h-4 w-4" />
-          Edit
+          Editar
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10">
           <UserX className="mr-2 h-4 w-4" />
-          Deactivate
+          Desactivar
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -17,7 +17,7 @@ export function DataTableToolbar<TData>({
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter users..."
+          placeholder="Filtrar usuarios..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -27,7 +27,7 @@ export function DataTableToolbar<TData>({
       </div>
       <Button size="sm" className="h-9">
         <PlusCircle className="mr-2 h-4 w-4" />
-        Add User
+        Añadir Usuario
       </Button>
     </div>
   );

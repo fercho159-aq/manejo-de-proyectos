@@ -12,16 +12,16 @@ interface DataTableToolbarProps<TData> {
 }
 
 const statuses = [
-  { value: "To Do", label: "To Do" },
-  { value: "In Progress", label: "In Progress" },
-  { value: "In Review", label: "In Review" },
-  { value: "Done", label: "Done" },
+  { value: "To Do", label: "Por Hacer" },
+  { value: "In Progress", label: "En Progreso" },
+  { value: "In Review", label: "En Revisión" },
+  { value: "Done", label: "Hecho" },
 ];
 
 const priorities = [
-  { value: "Low", label: "Low" },
-  { value: "Medium", label: "Medium" },
-  { value: "High", label: "High" },
+  { value: "Low", label: "Baja" },
+  { value: "Medium", label: "Media" },
+  { value: "High", label: "Alta" },
 ];
 
 const clients = [...new Set(projects.map(p => p.client))].map(c => ({ value: c, label: c }));
@@ -44,14 +44,14 @@ export function DataTableToolbar<TData>({
             }}
             className="h-9 px-2 lg:px-3"
           >
-            Reset
+            Limpiar
             <X className="ml-2 h-4 w-4" />
           </Button>
         )}
       </div>
       <Button size="sm" className="h-9">
         <PlusCircle className="mr-2 h-4 w-4" />
-        Add Task
+        Añadir Tarea
       </Button>
     </div>
   );

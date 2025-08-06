@@ -9,10 +9,10 @@ export function OverviewCards() {
   const activeProjects = projects.filter(p => p.status !== 'Completed').length;
 
   const cardData = [
-    { title: 'Total Projects', value: totalProjects, icon: FolderKanban },
-    { title: 'Pending Tasks', value: pendingTasks, icon: ListTodo },
-    { title: 'Completed Tasks', value: completedTasks, icon: CheckCircle },
-    { title: 'Active Projects', value: activeProjects, icon: Activity },
+    { title: 'Proyectos Totales', value: totalProjects, icon: FolderKanban },
+    { title: 'Tareas Pendientes', value: pendingTasks, icon: ListTodo },
+    { title: 'Tareas Completadas', value: completedTasks, icon: CheckCircle },
+    { title: 'Proyectos Activos', value: activeProjects, icon: Activity },
   ];
 
   return (

@@ -18,10 +18,10 @@ export function ProjectList() {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Project</TableHead>
-          <TableHead>Client</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead className="text-right">Due Date</TableHead>
+          <TableHead>Proyecto</TableHead>
+          <TableHead>Cliente</TableHead>
+          <TableHead>Estado</TableHead>
+          <TableHead className="text-right">Fecha de Entrega</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -37,7 +37,7 @@ export function ProjectList() {
                   'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': project.status === 'Completed',
                 })}
               >
-                {project.status}
+                {project.status === 'On Track' ? 'En Curso' : project.status === 'At Risk' ? 'En Riesgo' : 'Completado'}
               </Badge>
             </TableCell>
             <TableCell className="text-right">

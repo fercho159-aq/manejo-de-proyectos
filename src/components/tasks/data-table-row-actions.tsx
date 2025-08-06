@@ -43,7 +43,7 @@ export function DataTableRowActions<TData>({
 
   const newSubtask: Task = {
       id: `task-${Date.now()}`,
-      title: 'New Subtask',
+      title: 'Nueva Subtarea',
       projectId: task.projectId,
       status: 'To Do',
       priority: 'Medium',
@@ -62,31 +62,31 @@ export function DataTableRowActions<TData>({
               className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
             >
               <MoreHorizontal className="h-4 w-4" />
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Abrir menú</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-[160px]">
             <DialogTrigger asChild>
               <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
                 <Pen className="mr-2 h-4 w-4" />
-                Edit
+                Editar
               </DropdownMenuItem>
             </DialogTrigger>
              <DropdownMenuItem onSelect={() => handleAddSubtask(newSubtask)}>
               <Plus className="mr-2 h-4 w-4" />
-              Add Subtask
+              Añadir Subtarea
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10">
               <Trash className="mr-2 h-4 w-4" />
-              Delete
+              Eliminar
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Task</DialogTitle>
+            <DialogTitle>Editar Tarea</DialogTitle>
           </DialogHeader>
           <EditTaskForm
             task={task}

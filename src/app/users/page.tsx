@@ -6,7 +6,7 @@ import { users } from "@/lib/data";
 export default function UsersPage() {
   return (
     <div className="flex h-full flex-col">
-      <Header title="Users" />
+      <Header title="Usuarios" />
       <div className="flex-1 space-y-6 p-4 pt-6 md:p-8">
         <DataTable columns={columns} data={users} />
       </div>

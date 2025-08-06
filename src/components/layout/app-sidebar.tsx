@@ -18,9 +18,9 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   const menuItems = [
-    { href: '/', label: 'Dashboard', icon: Home },
-    { href: '/tasks', label: 'Tasks', icon: ListTodo },
-    { href: '/users', label: 'Users', icon: Users },
+    { href: '/', label: 'Panel', icon: Home },
+    { href: '/tasks', label: 'Tareas', icon: ListTodo },
+    { href: '/users', label: 'Usuarios', icon: Users },
   ];
 
   return (
@@ -47,7 +47,7 @@ export function AppSidebar() {
         ))}
       </SidebarMenu>
       <SidebarFooter className="p-4">
-        <Button variant="outline">Sign Out</Button>
+        <Button variant="outline">Cerrar Sesión</Button>
       </SidebarFooter>
     </Sidebar>
   );

@@ -26,7 +26,7 @@ import { users } from "@/lib/data";
 import { DialogFooter } from "../ui/dialog";
 
 const formSchema = z.object({
-  title: z.string().min(1, "Title is required"),
+  title: z.string().min(1, "El título es requerido"),
   status: z.enum(["To Do", "In Progress", "In Review", "Done"]),
   priority: z.enum(["Low", "Medium", "High"]),
   assigneeId: z.string().nullable(),
@@ -66,7 +66,7 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Title</FormLabel>
+              <FormLabel>Título</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -80,21 +80,21 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Status</FormLabel>
+                <FormLabel>Estado</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a status" />
+                      <SelectValue placeholder="Seleccione un estado" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="To Do">To Do</SelectItem>
-                    <SelectItem value="In Progress">In Progress</SelectItem>
-                    <SelectItem value="In Review">In Review</SelectItem>
-                    <SelectItem value="Done">Done</SelectItem>
+                    <SelectItem value="To Do">Por Hacer</SelectItem>
+                    <SelectItem value="In Progress">En Progreso</SelectItem>
+                    <SelectItem value="In Review">En Revisión</SelectItem>
+                    <SelectItem value="Done">Hecho</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -106,20 +106,20 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
             name="priority"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Priority</FormLabel>
+                <FormLabel>Prioridad</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a priority" />
+                      <SelectValue placeholder="Seleccione una prioridad" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="Low">Low</SelectItem>
-                    <SelectItem value="Medium">Medium</SelectItem>
-                    <SelectItem value="High">High</SelectItem>
+                    <SelectItem value="Low">Baja</SelectItem>
+                    <SelectItem value="Medium">Media</SelectItem>
+                    <SelectItem value="High">Alta</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -132,14 +132,14 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
             name="area"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Area</FormLabel>
+                <FormLabel>Área</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select an area" />
+                      <SelectValue placeholder="Seleccione un área" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -157,15 +157,15 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
           name="assigneeId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Assignee</FormLabel>
+              <FormLabel>Asignado a</FormLabel>
               <Select onValueChange={(value) => field.onChange(value === "null" ? null : value)} defaultValue={field.value ?? "null"}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select an assignee" />
+                    <SelectValue placeholder="Seleccione un usuario" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="null">Unassigned</SelectItem>
+                  <SelectItem value="null">Sin asignar</SelectItem>
                   {users.map((user: User) => (
                     <SelectItem key={user.id} value={user.id}>
                       {user.name}
@@ -182,7 +182,7 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
           name="estimatedDuration"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Estimated Duration (hours)</FormLabel>
+              <FormLabel>Duración Estimada (horas)</FormLabel>
               <FormControl>
                 <Input type="number" {...field} />
               </FormControl>
@@ -191,8 +191,8 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
           )}
         />
         <DialogFooter>
-          <Button type="button" variant="ghost" onClick={onClose}>Cancel</Button>
-          <Button type="submit">Save changes</Button>
+          <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
+          <Button type="submit">Guardar cambios</Button>
         </DialogFooter>
       </form>
     </Form>

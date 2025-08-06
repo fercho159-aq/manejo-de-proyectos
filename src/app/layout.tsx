@@ -6,7 +6,7 @@ import { AppSidebar } from '@/components/layout/app-sidebar';
 
 export const metadata: Metadata = {
   title: 'TaskWise Dashboard',
-  description: 'Manage your projects and tasks efficiently.',
+  description: 'Gestiona tus proyectos y tareas eficientemente.',
 };
 
 export default function RootLayout({
@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="es" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
