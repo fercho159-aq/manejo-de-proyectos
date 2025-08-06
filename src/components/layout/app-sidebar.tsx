@@ -28,7 +28,7 @@ export function AppSidebar() {
       <SidebarHeader className="p-4">
         <div className="flex items-center gap-2">
             <Bot className="h-8 w-8 text-primary" />
-            <h1 className="text-xl font-semibold">Maw soluciones</h1>
+            <h1 className="text-xl font-semibold">Seguimiento Pendientes</h1>
         </div>
       </SidebarHeader>
       <SidebarMenu className="flex-1">
