@@ -34,7 +34,7 @@ export function ProjectList() {
         return (
           <AccordionItem value={project.id} key={project.id}>
             <AccordionTrigger className="hover:no-underline">
-              <div className="grid flex-1 grid-cols-2 items-center gap-4 text-left md:grid-cols-4">
+              <div className="grid flex-1 grid-cols-3 items-center gap-4 text-left">
                 <div className="font-medium">{project.name}</div>
                 <div className="text-muted-foreground">{project.client}</div>
                 <div>
@@ -47,9 +47,6 @@ export function ProjectList() {
                   >
                     {project.status === 'On Track' ? 'En Curso' : project.status === 'At Risk' ? 'En Riesgo' : 'Completado'}
                   </Badge>
-                </div>
-                <div className="text-right text-muted-foreground">
-                  {project.dueDate ? format(new Date(project.dueDate), 'PPP') : '-'}
                 </div>
               </div>
             </AccordionTrigger>
