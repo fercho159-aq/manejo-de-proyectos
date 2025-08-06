@@ -7,10 +7,11 @@ import { tasks, projects } from "@/lib/data";
 import { es } from 'date-fns/locale';
 
 export function VisitCalendar() {
-    const [date, setDate] = useState<Date | undefined>(undefined);
+    const [date, setDate] = useState<Date | undefined>(new Date());
+    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
-        setDate(new Date());
+        setIsClient(true);
     }, []);
 
     const visitDates = tasks.filter(t => t.visitDate).map(t => t.visitDate!);
@@ -21,6 +22,11 @@ export function VisitCalendar() {
 
     const getClientName = (projectId: string) => {
         return projects.find(p => p.id === projectId)?.client || 'N/A';
+    }
+    
+    if (!isClient) {
+        // Render a placeholder or nothing on the server to avoid hydration mismatch
+        return null;
     }
 
     return (
@@ -40,6 +46,7 @@ export function VisitCalendar() {
                         backgroundColor: 'hsl(var(--primary))'
                     }
                 }}
+                initialFocus
             />
             <div className="flex-1 min-w-0">
                 <h3 className="mb-2 text-lg font-semibold truncate">
