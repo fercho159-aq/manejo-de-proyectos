@@ -19,12 +19,12 @@ export function VisitCalendar() {
     }
 
     return (
-        <div className="flex flex-col gap-4 md:flex-row">
+        <div className="flex flex-col gap-4 lg:flex-row">
             <Calendar
                 mode="single"
                 selected={date}
                 onSelect={setDate}
-                className="rounded-md border"
+                className="rounded-md border self-center"
                 locale={es}
                 modifiers={{
                     visits: visitDates
