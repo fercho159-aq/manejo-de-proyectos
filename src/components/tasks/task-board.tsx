@@ -50,7 +50,7 @@ const getStatus = (statusValue: Task['status']) => statuses.find(s => s.value ==
 const getPriority = (priorityValue: Task['priority']) => priorities.find(p => p.value === priorityValue);
 
 
-function TaskCard({ task, index, onUpdateTask }: { task: Task; index: number; onUpdateTask: (task: Task) => void }) {
+function TaskCard({ task, index, users, onUpdateTask }: { task: Task; index: number; users: User[]; onUpdateTask: (task: Task) => void }) {
     const status = getStatus(task.status);
     const priority = getPriority(task.priority);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -193,7 +193,7 @@ export function TaskBoard({ tasks, users, onUpdateTask }: TaskBoardProps) {
                         </div>
                         <div className="flex flex-col gap-3 min-h-[100px]">
                             {userTasks.map((task, index) => (
-                                <TaskCard key={task.id} task={task} index={index} onUpdateTask={onUpdateTask} />
+                                <TaskCard key={task.id} task={task} index={index} users={users} onUpdateTask={onUpdateTask} />
                             ))}
                             {provided.placeholder}
                             {userTasks.length === 0 && !snapshot.isDraggingOver && (
