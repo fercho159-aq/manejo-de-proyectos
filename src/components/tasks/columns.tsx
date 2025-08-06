@@ -167,10 +167,12 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
             'text-blue-600 border-blue-300 focus:ring-blue-500': status.value === 'In Review',
             'text-green-600 border-green-300 focus:ring-green-500': status.value === 'Done',
           })}>
-            <div className="flex items-center gap-2">
-              <status.icon className="h-4 w-4" />
-              <SelectValue placeholder="Seleccionar estado" />
-            </div>
+            <SelectValue asChild>
+                <div className="flex items-center gap-2">
+                    <status.icon className="h-4 w-4" />
+                    <span>{status.label}</span>
+                </div>
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {statuses.map(s => (
