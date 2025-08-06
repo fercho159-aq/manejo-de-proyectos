@@ -115,7 +115,8 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
     },
     filterFn: (row, id, value) => {
       const user: User | undefined = users.find(u => u.id === row.getValue(id));
-      return user ? user.name.toLowerCase().includes(String(value).toLowerCase()) : false;
+      const filterValue = value as string;
+      return user ? user.name.toLowerCase().includes(filterValue.toLowerCase()) : false;
     },
   },
   {
@@ -136,7 +137,8 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
     },
     filterFn: (row, id, value) => {
       const project: Project | undefined = projects.find(p => p.id === row.getValue(id));
-      return project ? project.client.toLowerCase().includes(String(value).toLowerCase()) : false;
+      const filterValue = value as string;
+      return project ? project.client.toLowerCase().includes(filterValue.toLowerCase()) : false;
     },
   },
   {
@@ -161,7 +163,6 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
         >
           <SelectTrigger className="w-40 capitalize">
             <div className="flex items-center">
-              <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
               <SelectValue placeholder="Seleccionar estado" />
             </div>
           </SelectTrigger>

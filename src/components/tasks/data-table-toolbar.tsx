@@ -2,6 +2,7 @@
 
 import { Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { PlusCircle, X } from "lucide-react";
 import { DataTableFacetedFilter } from "../data-table-faceted-filter";
 import { users, projects } from "@/lib/data";
@@ -9,6 +10,7 @@ import { taskAreas } from "@/types";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  onFilterChange: (value: string) => void;
 }
 
 const statuses = [
@@ -30,18 +32,28 @@ const areas = taskAreas.map(a => ({ value: a, label: a }));
 
 export function DataTableToolbar<TData>({
   table,
+  onFilterChange,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
+
+  const handleReset = () => {
+    table.resetColumnFilters();
+    onFilterChange(""); 
+  }
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
+      <Input
+          placeholder="Filtrar por título, cliente o asignado..."
+          value={(table.getState().globalFilter as string) ?? ""}
+          onChange={(event) => onFilterChange(event.target.value)}
+          className="h-9 w-[250px] lg:w-[350px]"
+        />
         {isFiltered && (
           <Button
             variant="ghost"
-            onClick={() => {
-              table.resetColumnFilters();
-            }}
+            onClick={handleReset}
             className="h-9 px-2 lg:px-3"
           >
             Limpiar

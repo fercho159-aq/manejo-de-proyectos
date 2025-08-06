@@ -80,9 +80,16 @@ export function DataTable<TData extends Task, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
+  const onFilterChange = (value: string) => {
+    setGlobalFilter(value);
+    table.getColumn("title")?.setFilterValue(value);
+    table.getColumn("assigneeId")?.setFilterValue(value);
+    table.getColumn("projectId")?.setFilterValue(value);
+};
+
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar table={table} onFilterChange={onFilterChange} />
       <div className="rounded-md border bg-card">
         <Table>
           <TableHeader>
@@ -98,16 +105,6 @@ export function DataTable<TData extends Task, TValue>({
                                 header.column.columnDef.header,
                                 header.getContext()
                             )}
-                            {header.column.getCanFilter() ? (
-                                <div className="mt-2">
-                                    <Input
-                                        placeholder={`Filtrar...`}
-                                        value={(header.column.getFilterValue() as string) ?? ''}
-                                        onChange={(e) => header.column.setFilterValue(e.target.value)}
-                                        className="h-8"
-                                    />
-                                </div>
-                            ) : null}
                         </div>
                       }
                     </TableHead>
