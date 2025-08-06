@@ -7,15 +7,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { MoreHorizontal, Circle, Dot, HelpCircle, CheckCircle, ArrowUp, ArrowRight, ArrowDown } from "lucide-react";
+import { MoreHorizontal, Circle, Dot, HelpCircle, CheckCircle, ArrowUp, ArrowRight, ArrowDown, Pen } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { useState, useEffect } from "react";
+import { EditTaskForm } from "./edit-task-form";
 
 
 interface TaskBoardProps {
@@ -42,18 +50,20 @@ const getStatus = (statusValue: Task['status']) => statuses.find(s => s.value ==
 const getPriority = (priorityValue: Task['priority']) => priorities.find(p => p.value === priorityValue);
 
 
-function TaskCard({ task, index }: { task: Task, index: number }) {
+function TaskCard({ task, index, onUpdateTask }: { task: Task; index: number; onUpdateTask: (task: Task) => void }) {
     const status = getStatus(task.status);
     const priority = getPriority(task.priority);
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     
     return (
-        <Draggable draggableId={task.id} index={index}>
+        <Draggable draggableId={task.id} index={index} ignoreContainerClipping={false}>
             {(provided, snapshot) => (
                 <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                 >
+                  <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
                     <Card className={cn(
                         "w-full",
                         snapshot.isDragging ? "bg-card/80 shadow-lg" : ""
@@ -68,8 +78,13 @@ function TaskCard({ task, index }: { task: Task, index: number }) {
                                         </button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuItem>Editar</DropdownMenuItem>
-                                        <DropdownMenuItem>Eliminar</DropdownMenuItem>
+                                        <DialogTrigger asChild>
+                                            <DropdownMenuItem onSelect={() => setIsEditDialogOpen(true)}>
+                                                <Pen className="mr-2 h-4 w-4" />
+                                                Editar
+                                            </DropdownMenuItem>
+                                        </DialogTrigger>
+                                        <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10">Eliminar</DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </div>
@@ -80,17 +95,33 @@ function TaskCard({ task, index }: { task: Task, index: number }) {
                         <CardContent className="p-3 pt-0">
                             <div className="flex items-center justify-between text-xs text-muted-foreground">
                                 <div className="flex items-center gap-1">
-                                    {status && <status.icon className="h-3.5 w-3.5" />}
-                                    <span>{status?.label}</span>
+                                    {task.assigneeId && users.find(u => u.id === task.assigneeId) ? (
+                                        <Avatar className="h-5 w-5">
+                                            <AvatarImage src={users.find(u => u.id === task.assigneeId)?.avatar} />
+                                            <AvatarFallback>{users.find(u => u.id === task.assigneeId)?.name.charAt(0)}</AvatarFallback>
+                                        </Avatar>
+                                    ) : (
+                                      <div className="h-5 w-5" />
+                                    )}
                                 </div>
                                 <div className="flex items-center gap-1">
                                     {priority && <priority.icon className={cn("h-3.5 w-3.5", priority.color)} />}
-                                    <span>{priority?.label}</span>
                                 </div>
                                 <Badge variant="secondary">{task.estimatedDuration}h</Badge>
                             </div>
                         </CardContent>
                     </Card>
+                    <DialogContent>
+                        <DialogHeader>
+                        <DialogTitle>Editar Tarea</DialogTitle>
+                        </DialogHeader>
+                        <EditTaskForm
+                        task={task}
+                        onUpdateTask={onUpdateTask}
+                        onClose={() => setIsEditDialogOpen(false)}
+                        />
+                    </DialogContent>
+                  </Dialog>
                 </div>
             )}
         </Draggable>
@@ -162,7 +193,7 @@ export function TaskBoard({ tasks, users, onUpdateTask }: TaskBoardProps) {
                         </div>
                         <div className="flex flex-col gap-3 min-h-[100px]">
                             {userTasks.map((task, index) => (
-                                <TaskCard key={task.id} task={task} index={index} />
+                                <TaskCard key={task.id} task={task} index={index} onUpdateTask={onUpdateTask} />
                             ))}
                             {provided.placeholder}
                             {userTasks.length === 0 && !snapshot.isDraggingOver && (
