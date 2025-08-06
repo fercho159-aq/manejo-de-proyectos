@@ -47,7 +47,7 @@ export function AppSidebar() {
         ))}
       </SidebarMenu>
       <SidebarFooter className="p-4">
-        <Button variant="outline">Cerrar Sesión</Button>
+        
       </SidebarFooter>
     </Sidebar>
   );
