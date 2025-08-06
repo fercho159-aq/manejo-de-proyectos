@@ -73,7 +73,7 @@ export default function TasksPage() {
             <DataTable columns={columns({ onUpdateTask, onAddTask })} data={tasksWithSubtasks} onUpdateTask={onUpdateTask} onAddTask={onAddTask} />
           </TabsContent>
           <TabsContent value="board" className="mt-4">
-            <TaskBoard tasks={tasks} users={users} onUpdateTask={onUpdateTask} />
+            <TaskBoard tasks={tasks} users={users} onUpdateTask={onUpdateTask} onAddTask={onAddTask} />
           </TabsContent>
         </Tabs>
       </div>

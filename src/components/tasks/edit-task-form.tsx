@@ -20,8 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Task, User, taskAreas } from "@/types";
-import { users } from "@/lib/data";
+import { Task, User, taskAreas, Project } from "@/types";
+import { users, projects } from "@/lib/data";
 import { DialogFooter } from "../ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CalendarIcon } from "lucide-react";
@@ -32,6 +32,7 @@ import { es } from "date-fns/locale";
 
 const formSchema = z.object({
   title: z.string().min(1, "El título es requerido"),
+  projectId: z.string().min(1, "El cliente es requerido"),
   status: z.enum(["To Do", "In Progress", "In Review", "Done"]),
   priority: z.enum(["Low", "Medium", "High"]),
   assigneeId: z.string().nullable(),
@@ -41,27 +42,34 @@ const formSchema = z.object({
 });
 
 interface EditTaskFormProps {
-  task: Task;
+  task: Task | Partial<Task>;
   onUpdateTask: (task: Task) => void;
   onClose: () => void;
+  isAdding?: boolean;
 }
 
-export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps) {
+export function EditTaskForm({ task, onUpdateTask, onClose, isAdding = false }: EditTaskFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: task.title,
-      status: task.status,
-      priority: task.priority,
-      assigneeId: task.assigneeId,
-      estimatedDuration: task.estimatedDuration,
+      title: task.title ?? '',
+      projectId: task.projectId ?? '',
+      status: task.status ?? 'To Do',
+      priority: task.priority ?? 'Medium',
+      assigneeId: task.assigneeId ?? null,
+      estimatedDuration: task.estimatedDuration ?? 0,
       area: task.area,
       visitDate: task.visitDate,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    onUpdateTask({ ...task, ...values });
+    const taskToSave: Task = {
+      ...(task as Task), // Cast to full task for existing properties
+      ...values,
+      id: task.id || `task-${Date.now()}` // Ensure ID exists
+    };
+    onUpdateTask(taskToSave);
     onClose();
   }
 
@@ -77,6 +85,30 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
               <FormControl>
                 <Input {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="projectId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Cliente</FormLabel>
+               <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccione un cliente" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {projects.map((project: Project) => (
+                    <SelectItem key={project.id} value={project.id}>
+                      {project.client}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -214,7 +246,7 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
                       )}
                     >
                       {field.value ? (
-                        format(field.value, "PPP", { locale: es })
+                        format(new Date(field.value), "PPP", { locale: es })
                       ) : (
                         <span>Seleccione una fecha</span>
                       )}
@@ -225,7 +257,7 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={field.value ?? undefined}
+                    selected={field.value ? new Date(field.value) : undefined}
                     onSelect={(date) => field.onChange(date ?? null)}
                     disabled={(date) =>
                       date < new Date(new Date().setHours(0,0,0,0))
@@ -241,7 +273,7 @@ export function EditTaskForm({ task, onUpdateTask, onClose }: EditTaskFormProps)
         />
         <DialogFooter>
           <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
-          <Button type="submit">Guardar cambios</Button>
+          <Button type="submit">{isAdding ? 'Crear Tarea' : 'Guardar cambios'}</Button>
         </DialogFooter>
       </form>
     </Form>

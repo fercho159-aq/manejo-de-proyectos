@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { MoreHorizontal, Circle, Dot, HelpCircle, CheckCircle, ArrowUp, ArrowRight, ArrowDown, Pen } from "lucide-react";
+import { MoreHorizontal, Circle, Dot, HelpCircle, CheckCircle, ArrowUp, ArrowRight, ArrowDown, Pen, PlusCircle } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,12 +24,14 @@ import {
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { useState, useEffect } from "react";
 import { EditTaskForm } from "./edit-task-form";
+import { Button } from "../ui/button";
 
 
 interface TaskBoardProps {
   tasks: Task[];
   users: User[];
   onUpdateTask: (task: Task) => void;
+  onAddTask: (task: Task) => void;
 }
 
 const statuses = [
@@ -56,7 +58,7 @@ function TaskCard({ task, index, users, onUpdateTask }: { task: Task; index: num
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     
     return (
-        <Draggable draggableId={task.id} index={index} ignoreContainerClipping={false}>
+        <Draggable draggableId={task.id} index={index} ignoreContainerClipping={true}>
             {(provided, snapshot) => (
                 <div
                     ref={provided.innerRef}
@@ -116,9 +118,9 @@ function TaskCard({ task, index, users, onUpdateTask }: { task: Task; index: num
                         <DialogTitle>Editar Tarea</DialogTitle>
                         </DialogHeader>
                         <EditTaskForm
-                        task={task}
-                        onUpdateTask={onUpdateTask}
-                        onClose={() => setIsEditDialogOpen(false)}
+                          task={task}
+                          onUpdateTask={onUpdateTask}
+                          onClose={() => setIsEditDialogOpen(false)}
                         />
                     </DialogContent>
                   </Dialog>
@@ -128,8 +130,9 @@ function TaskCard({ task, index, users, onUpdateTask }: { task: Task; index: num
     )
 }
 
-export function TaskBoard({ tasks, users, onUpdateTask }: TaskBoardProps) {
+export function TaskBoard({ tasks, users, onUpdateTask, onAddTask }: TaskBoardProps) {
   const [isClient, setIsClient] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -161,53 +164,90 @@ export function TaskBoard({ tasks, users, onUpdateTask }: TaskBoardProps) {
     { id: "unassigned", name: "Sin asignar", avatar: "", email: "" },
   ];
 
+  const handleAddTask = (task: Task) => {
+    onAddTask(task);
+    setIsAddDialogOpen(false);
+  }
+
+  const defaultNewTask: Partial<Task> = {
+    id: `task-${Date.now()}`,
+    title: '',
+    projectId: projects[0]?.id || '',
+    status: 'To Do',
+    priority: 'Medium',
+    assigneeId: null,
+    estimatedDuration: 1,
+  };
+
+
   if (!isClient) {
     return null; // Don't render on the server
   }
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-        <div className="grid auto-cols-[minmax(280px,1fr)] grid-flow-col gap-4 overflow-x-auto pb-4">
-        {userColumns.map(user => {
-            const userTasks = tasks.filter(task => (user.id === 'unassigned' ? task.assigneeId === null : task.assigneeId === user.id)  && !task.parentId);
-            return (
-            <Droppable droppableId={user.id} key={user.id} isDropDisabled={false} isCombineEnabled={false}>
-                {(provided, snapshot) => (
-                    <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={cn(
-                            "flex flex-col gap-4 rounded-lg bg-muted/50 p-3 transition-colors",
-                            snapshot.isDraggingOver ? "bg-muted" : "bg-muted/50"
-                        )}
-                    >
-                        <div className="flex items-center gap-2">
-                        {user.id !== 'unassigned' && (
-                            <Avatar className="h-7 w-7 border">
-                                <AvatarImage src={user.avatar} />
-                                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                            </Avatar>
-                        )}
-                        <h3 className="font-semibold text-sm">{user.name}</h3>
-                        <Badge variant="secondary" className="text-xs">{userTasks.length}</Badge>
-                        </div>
-                        <div className="flex flex-col gap-3 min-h-[100px]">
-                            {userTasks.map((task, index) => (
-                                <TaskCard key={task.id} task={task} index={index} users={users} onUpdateTask={onUpdateTask} />
-                            ))}
-                            {provided.placeholder}
-                            {userTasks.length === 0 && !snapshot.isDraggingOver && (
-                                <div className="flex h-24 items-center justify-center rounded-md border-2 border-dashed border-muted-foreground/30">
-                                    <p className="text-xs text-muted-foreground">Arrastra tareas aquí</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                )}
-            </Droppable>
-            );
-        })}
-        </div>
-    </DragDropContext>
+    <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+      <div className="flex justify-end mb-4">
+        <DialogTrigger asChild>
+          <Button size="sm" onClick={() => setIsAddDialogOpen(true)}>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Añadir Tarea
+          </Button>
+        </DialogTrigger>
+      </div>
+       <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Añadir Nueva Tarea</DialogTitle>
+          </DialogHeader>
+          <EditTaskForm
+            task={defaultNewTask as Task}
+            onUpdateTask={handleAddTask} 
+            onClose={() => setIsAddDialogOpen(false)}
+            isAdding
+          />
+        </DialogContent>
+      <DragDropContext onDragEnd={onDragEnd}>
+          <div className="grid auto-cols-[minmax(280px,1fr)] grid-flow-col gap-4 overflow-x-auto pb-4">
+          {userColumns.map(user => {
+              const userTasks = tasks.filter(task => (user.id === 'unassigned' ? task.assigneeId === null : task.assigneeId === user.id)  && !task.parentId);
+              return (
+              <Droppable droppableId={user.id} key={user.id} isDropDisabled={false} isCombineEnabled={false}>
+                  {(provided, snapshot) => (
+                      <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                          className={cn(
+                              "flex flex-col gap-4 rounded-lg bg-muted/50 p-3 transition-colors",
+                              snapshot.isDraggingOver ? "bg-muted" : "bg-muted/50"
+                          )}
+                      >
+                          <div className="flex items-center gap-2">
+                          {user.id !== 'unassigned' && (
+                              <Avatar className="h-7 w-7 border">
+                                  <AvatarImage src={user.avatar} />
+                                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                              </Avatar>
+                          )}
+                          <h3 className="font-semibold text-sm">{user.name}</h3>
+                          <Badge variant="secondary" className="text-xs">{userTasks.length}</Badge>
+                          </div>
+                          <div className="flex flex-col gap-3 min-h-[100px]">
+                              {userTasks.map((task, index) => (
+                                  <TaskCard key={task.id} task={task} index={index} users={users} onUpdateTask={onUpdateTask} />
+                              ))}
+                              {provided.placeholder}
+                              {userTasks.length === 0 && !snapshot.isDraggingOver && (
+                                  <div className="flex h-24 items-center justify-center rounded-md border-2 border-dashed border-muted-foreground/30">
+                                      <p className="text-xs text-muted-foreground">Arrastra tareas aquí</p>
+                                  </div>
+                              )}
+                          </div>
+                      </div>
+                  )}
+              </Droppable>
+              );
+          })}
+          </div>
+      </DragDropContext>
+    </Dialog>
   );
 }
