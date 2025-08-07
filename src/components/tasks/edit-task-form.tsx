@@ -30,7 +30,9 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import React from "react";
-import { Textarea } from "../ui/textarea";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
+import { ContentCreationDetailsForm } from "./content-creation-details";
+
 
 const contentDetailsSchema = z.object({
   cutoffDateInfo: z.string().optional(),
@@ -302,128 +304,18 @@ export function EditTaskForm({ task, onUpdateTask, onClose, isAdding = false }: 
         />
         
         {watchedArea === 'Creación de contenido' && (
-            <div className="space-y-4 rounded-md border p-4">
-                <h4 className="font-semibold">Detalles de Creación de Contenido</h4>
-                <FormField
-                    control={form.control}
-                    name="contentDetails.cutoffDateInfo"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Fecha de Corte</FormLabel>
-                        <FormControl>
-                            <Input {...field} placeholder="Ej: Cada 30 del mes" />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <div className="grid grid-cols-2 gap-4">
-                    <FormField
-                    control={form.control}
-                    name="contentDetails.videosRecordedUntil"
-                    render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                        <FormLabel>Videos grabados hasta</FormLabel>
-                        <Popover>
-                            <PopoverTrigger asChild>
-                            <FormControl>
-                                <Button
-                                variant={"outline"}
-                                className={cn(
-                                    "w-full pl-3 text-left font-normal",
-                                    !field.value && "text-muted-foreground"
-                                )}
-                                >
-                                {field.value ? (
-                                    format(new Date(field.value), "PPP", { locale: es })
-                                ) : (
-                                    <span>Seleccione una fecha</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
-                            </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                                mode="single"
-                                selected={field.value ? new Date(field.value) : undefined}
-                                onSelect={(date) => field.onChange(date ?? null)}
-                                initialFocus
-                                locale={es}
-                            />
-                            </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
-                    <FormField
-                    control={form.control}
-                    name="contentDetails.postsReadyUntil"
-                    render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                        <FormLabel>Posts/Historias hasta</FormLabel>
-                        <Popover>
-                            <PopoverTrigger asChild>
-                            <FormControl>
-                                <Button
-                                variant={"outline"}
-                                className={cn(
-                                    "w-full pl-3 text-left font-normal",
-                                    !field.value && "text-muted-foreground"
-                                )}
-                                >
-                                {field.value ? (
-                                    format(new Date(field.value), "PPP", { locale: es })
-                                ) : (
-                                    <span>Seleccione una fecha</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
-                            </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                                mode="single"
-                                selected={field.value ? new Date(field.value) : undefined}
-                                onSelect={(date) => field.onChange(date ?? null)}
-                                initialFocus
-                                locale={es}
-                            />
-                            </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
+           <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="content-details">
+              <AccordionTrigger className="text-sm font-semibold">
+                Detalles de Creación de Contenido
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-4 pt-2">
+                 <ContentCreationDetailsForm form={form} />
                 </div>
-                <FormField
-                    control={form.control}
-                    name="contentDetails.monthlyDeliverables"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>¿Qué le publicamos al mes?</FormLabel>
-                        <FormControl>
-                            <Textarea {...field} placeholder="12 videos..." rows={4}/>
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                 <FormField
-                    control={form.control}
-                    name="contentDetails.publishingSchedule"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>¿Cuándo le publicamos?</FormLabel>
-                        <FormControl>
-                            <Textarea {...field} placeholder="Lunes: Video..." rows={8}/>
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-            </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         )}
 
         <DialogFooter className="sticky bottom-0 bg-background py-4">
