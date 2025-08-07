@@ -1,20 +1,30 @@
 "use client";
 
+import { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { webProjects } from "@/lib/web-projects-data";
-import { WebProject, WebProjectStatus, WebProjectType } from "@/types";
+import { WebProject, WebProjectStatus, WebProjectType, Task } from "@/types";
 import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { users } from "@/lib/data";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import { Building, Code, ExternalLink, HardHat, Rocket } from "lucide-react";
+import { Building, Code, ExternalLink, HardHat, Rocket, MoreHorizontal, Edit, PlusCircle } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { EditWebProjectForm } from "./edit-web-project-form";
+import { EditTaskForm } from "../tasks/edit-task-form";
+
+interface ProjectBoardProps {
+    projects: WebProject[];
+    onUpdateProject: (project: WebProject) => void;
+    onAddTask: (task: Task) => void;
+}
 
 interface ProjectColumnProps {
     title: string;
     projects: WebProject[];
+    onUpdateProject: (project: WebProject) => void;
+    onAddTask: (task: Task) => void;
 }
 
 const statusConfig: Record<WebProjectStatus, { label: string; className: string }> = {
@@ -36,77 +46,130 @@ const techIcons: Record<string, React.ReactNode> = {
 }
 
 
-function ProjectCard({ project }: { project: WebProject }) {
+function ProjectCard({ project, onUpdateProject, onAddTask }: { project: WebProject; onUpdateProject: (project: WebProject) => void; onAddTask: (task: Task) => void; }) {
     const statusInfo = statusConfig[project.status];
-    const assignee = users.find(u => u.id === project.assigneeId);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
+
+    const defaultNewTask: Partial<Task> = {
+        title: '',
+        projectId: project.id, // Pre-fill project
+        status: 'To Do',
+        priority: 'Medium',
+        assigneeId: null,
+        estimatedDuration: 1,
+    };
 
     return (
-        <Card>
-            <CardHeader className="p-4 pb-2">
-                 <div className="flex items-start justify-between">
-                    <CardTitle className="text-base font-semibold">{project.name}</CardTitle>
-                    {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
-                            <ExternalLink className="h-4 w-4" />
-                        </a>
-                    )}
-                </div>
-                 <Badge variant="outline" className={cn("text-xs w-fit", statusInfo.className)}>{statusInfo.label}</Badge>
-            </CardHeader>
-            <CardContent className="p-4 pt-2">
-                <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <TooltipProvider>
-                    <div className="flex items-center gap-2">
-                        {project.technologies.map(tech => (
-                           <Tooltip key={tech}>
-                               <TooltipTrigger asChild>
-                                   <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted">
-                                     {techIcons[tech] || <Code className="h-4 w-4" />}
-                                   </div>
-                               </TooltipTrigger>
-                               <TooltipContent>
-                                   <p>{tech}</p>
-                               </TooltipContent>
-                           </Tooltip>
-                        ))}
+        <Dialog open={isEditOpen || isAddTaskOpen} onOpenChange={(open) => {
+            if (isEditOpen) setIsEditOpen(open);
+            if (isAddTaskOpen) setIsAddTaskOpen(open);
+        }}>
+            <Card>
+                <CardHeader className="p-4 pb-2">
+                    <div className="flex items-start justify-between">
+                        <CardTitle className="text-base font-semibold">{project.name}</CardTitle>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button className="text-muted-foreground hover:text-foreground -mr-2 -mt-2 flex h-7 w-7 items-center justify-center rounded-md">
+                                    <MoreHorizontal className="h-4 w-4" />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem onSelect={() => setIsEditOpen(true)}>
+                                    <Edit className="mr-2 h-4 w-4" />
+                                    Editar Proyecto
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onSelect={() => setIsAddTaskOpen(true)}>
+                                    <PlusCircle className="mr-2 h-4 w-4" />
+                                    Crear Tarea
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
-                    </TooltipProvider>
-
-                    {assignee && (
+                    <div className="flex items-center gap-4">
+                        <Badge variant="outline" className={cn("text-xs w-fit", statusInfo.className)}>{statusInfo.label}</Badge>
+                         {project.liveUrl && (
+                            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary flex items-center gap-1 text-xs">
+                                <ExternalLink className="h-3 w-3" />
+                                Ver en vivo
+                            </a>
+                        )}
+                    </div>
+                </CardHeader>
+                <CardContent className="p-4 pt-2">
+                    <div className="flex items-center justify-start text-sm text-muted-foreground">
                         <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Avatar className="h-8 w-8">
-                                    <AvatarImage src={assignee.avatar} />
-                                    <AvatarFallback>{assignee.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{assignee.name}</p>
-                            </TooltipContent>
-                        </Tooltip>
+                        <div className="flex items-center gap-2">
+                            {project.technologies.map(tech => (
+                            <Tooltip key={tech}>
+                                <TooltipTrigger asChild>
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted">
+                                    {techIcons[tech] || <Code className="h-4 w-4" />}
+                                    </div>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>{tech}</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            ))}
+                        </div>
                         </TooltipProvider>
-                    )}
-                </div>
-            </CardContent>
-             {project.dueDate && (
-                <CardFooter className="p-4 pt-0">
-                    <div className="text-xs text-muted-foreground">
-                        Fecha de entrega: {format(new Date(project.dueDate), 'PPP', { locale: es })}
                     </div>
-                </CardFooter>
-            )}
-        </Card>
+                </CardContent>
+                {project.dueDate && (
+                    <CardFooter className="p-4 pt-0">
+                        <div className="text-xs text-muted-foreground">
+                            Fecha de entrega: {format(new Date(project.dueDate), 'PPP', { locale: es })}
+                        </div>
+                    </CardFooter>
+                )}
+            </Card>
+
+             <DialogContent>
+                 {isEditOpen && (
+                    <>
+                    <DialogHeader>
+                        <DialogTitle>Editar Proyecto Web</DialogTitle>
+                    </DialogHeader>
+                    <EditWebProjectForm 
+                        project={project} 
+                        onUpdateProject={(updatedProject) => {
+                            onUpdateProject(updatedProject);
+                            setIsEditOpen(false);
+                        }} 
+                        onClose={() => setIsEditOpen(false)} 
+                    />
+                    </>
+                 )}
+                 {isAddTaskOpen && (
+                     <>
+                     <DialogHeader>
+                         <DialogTitle>Crear Tarea para {project.name}</DialogTitle>
+                     </DialogHeader>
+                      <EditTaskForm 
+                        task={defaultNewTask} 
+                        onUpdateTask={(newTask) => {
+                            onAddTask(newTask as Task);
+                            setIsAddTaskOpen(false);
+                        }}
+                        onClose={() => setIsAddTaskOpen(false)}
+                        isAdding
+                      />
+                     </>
+                 )}
+            </DialogContent>
+        </Dialog>
     )
 }
 
-function ProjectColumn({ title, projects }: ProjectColumnProps) {
+function ProjectColumn({ title, projects, onUpdateProject, onAddTask }: ProjectColumnProps) {
     return (
         <div className="flex flex-col gap-4 rounded-lg bg-muted/50 p-4">
             <h3 className="text-lg font-semibold tracking-tight">{title}</h3>
             <div className="flex flex-col gap-3">
                 {projects.map(project => (
-                    <ProjectCard key={project.id} project={project} />
+                    <ProjectCard key={project.id} project={project} onUpdateProject={onUpdateProject} onAddTask={onAddTask} />
                 ))}
                  {projects.length === 0 && (
                     <div className="flex h-24 items-center justify-center rounded-md border-2 border-dashed border-muted-foreground/30">
@@ -119,14 +182,14 @@ function ProjectColumn({ title, projects }: ProjectColumnProps) {
 }
 
 
-export function ProjectBoard() {
-    const projectsList = webProjects.filter(p => p.type === 'project');
-    const retainersList = webProjects.filter(p => p.type === 'retainer');
+export function ProjectBoard({ projects, onUpdateProject, onAddTask }: ProjectBoardProps) {
+    const projectsList = projects.filter(p => p.type === 'project');
+    const retainersList = projects.filter(p => p.type === 'retainer');
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <ProjectColumn title="Proyectos" projects={projectsList} />
-            <ProjectColumn title="Igualas" projects={retainersList} />
+            <ProjectColumn title="Proyectos" projects={projectsList} onUpdateProject={onUpdateProject} onAddTask={onAddTask} />
+            <ProjectColumn title="Igualas" projects={retainersList} onUpdateProject={onUpdateProject} onAddTask={onAddTask} />
         </div>
     );
 }
