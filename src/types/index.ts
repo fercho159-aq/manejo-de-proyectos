@@ -17,6 +17,28 @@ export type ContentCreationDetails = {
   publishingSchedule?: string; // "¿Cuando le publicamos?"
 };
 
+export type AdCampaignDetails = {
+  meta?: {
+    interaction?: number;
+    messages?: number;
+    credentials?: string;
+  };
+  tiktok?: {
+    interaction?: number;
+    messages?: number;
+    credentials?: string;
+  };
+  googleAds?: {
+    budget?: number;
+    credentials?: string;
+  };
+  linkedin?: {
+    budget?: number;
+    credentials?: string;
+  };
+  pendingNotes?: string;
+};
+
 
 export type Task = {
   id: string;
@@ -32,6 +54,7 @@ export type Task = {
   area?: TaskArea;
   visitDate?: Date | null;
   contentDetails?: ContentCreationDetails;
+  adCampaignDetails?: AdCampaignDetails;
 };
 
 export type User = {

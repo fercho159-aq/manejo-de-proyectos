@@ -18,7 +18,28 @@ const today = new Date();
 
 export const tasks: Task[] = [
   { id: 'task-1', title: 'Diseño de la página de inicio', projectId: 'proj-1', status: 'Done', priority: 'High', assigneeId: 'user-1', estimatedDuration: 16, actualDuration: 18, area: 'Diseño web', visitDate: new Date(today.getFullYear(), today.getMonth(), 5) },
-  { id: 'task-2', title: 'Desarrollar pasarela de pago', projectId: 'proj-1', status: 'In Progress', priority: 'High', assigneeId: 'user-2', estimatedDuration: 24, area: 'Pautas' },
+  { 
+    id: 'task-2', 
+    title: 'Desarrollar pasarela de pago', 
+    projectId: 'proj-1', 
+    status: 'In Progress', 
+    priority: 'High', 
+    assigneeId: 'user-2', 
+    estimatedDuration: 24, 
+    area: 'Pautas',
+    adCampaignDetails: {
+      meta: {
+        interaction: 1000,
+        messages: 0,
+        credentials: "soluciones.maw.access@gmail.com\n$oluciones.access\nVerificado"
+      },
+      googleAds: {
+        budget: 2000,
+        credentials: "aldotrejomawsol@gmail.com\nAldotrejo2025."
+      },
+      pendingNotes: "1- rembolso deasa MAESTROS - 769 | Aun no desvloquea envio manual |\n2- Rembolso nuevo deasa antes h clean - MAESTROS - 864 | Ya se enviaron los datos | 900"
+    }
+  },
   { id: 'task-3', title: 'Flujo de autenticación de usuario', projectId: 'proj-2', status: 'In Review', priority: 'Medium', assigneeId: 'user-1', estimatedDuration: 12, area: 'Pautas', visitDate: new Date(today.getFullYear(), today.getMonth(), 12) },
   { id: 'task-4', title: 'Implementar historial de transacciones', projectId: 'proj-2', status: 'To Do', priority: 'Medium', assigneeId: null, estimatedDuration: 8, area: 'Pautas' },
   { 

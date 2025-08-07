@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Task, User, Project, ContentCreationDetails } from "@/types";
+import { Task, User, Project, ContentCreationDetails, AdCampaignDetails } from "@/types";
 import { users, projects } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -33,7 +33,7 @@ type ColumnsProps = {
   onAddTask: (task: Task) => void;
 }
 
-function ExpandedContent({ data }: { data?: ContentCreationDetails }) {
+function ContentCreationExpandedContent({ data }: { data?: ContentCreationDetails }) {
     if (!data) return null;
 
     const detailItems = [
@@ -69,6 +69,55 @@ function ExpandedContent({ data }: { data?: ContentCreationDetails }) {
     );
 }
 
+function AdCampaignExpandedContent({ data }: { data?: AdCampaignDetails }) {
+    if (!data) return null;
+
+    const formatCurrency = (value?: number) => {
+        if (value === undefined || value === null) return '-';
+        return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(value);
+    }
+    
+    return (
+        <div className="bg-muted/50 p-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-4">
+                <h4 className="font-bold text-sm">Presupuestos</h4>
+                <div className="space-y-2 text-sm">
+                    { (data.meta?.interaction || data.meta?.messages) && (
+                        <div>
+                            <p className="font-semibold">META</p>
+                            {data.meta?.interaction && <p className="text-muted-foreground">Interacción: {formatCurrency(data.meta.interaction)}</p>}
+                            {data.meta?.messages && <p className="text-muted-foreground">Mensajes: {formatCurrency(data.meta.messages)}</p>}
+                        </div>
+                    )}
+                    { (data.tiktok?.interaction || data.tiktok?.messages) && (
+                        <div>
+                            <p className="font-semibold">TikTok</p>
+                            {data.tiktok?.interaction && <p className="text-muted-foreground">Interacción: {formatCurrency(data.tiktok.interaction)}</p>}
+                            {data.tiktok?.messages && <p className="text-muted-foreground">Mensajes: {formatCurrency(data.tiktok.messages)}</p>}
+                        </div>
+                    )}
+                    {data.googleAds?.budget && <p><span className="font-semibold">Google Ads:</span> {formatCurrency(data.googleAds.budget)}</p>}
+                    {data.linkedin?.budget && <p><span className="font-semibold">LinkedIn:</span> {formatCurrency(data.linkedin.budget)}</p>}
+                </div>
+            </div>
+             <div className="space-y-4">
+                <h4 className="font-bold text-sm">Credenciales</h4>
+                <div className="space-y-2 text-sm">
+                    {data.meta?.credentials && <div><p className="font-semibold">META</p><pre className="whitespace-pre-wrap font-sans text-muted-foreground">{data.meta.credentials}</pre></div>}
+                    {data.tiktok?.credentials && <div><p className="font-semibold">TikTok</p><pre className="whitespace-pre-wrap font-sans text-muted-foreground">{data.tiktok.credentials}</pre></div>}
+                    {data.googleAds?.credentials && <div><p className="font-semibold">Google Ads</p><pre className="whitespace-pre-wrap font-sans text-muted-foreground">{data.googleAds.credentials}</pre></div>}
+                    {data.linkedin?.credentials && <div><p className="font-semibold">LinkedIn</p><pre className="whitespace-pre-wrap font-sans text-muted-foreground">{data.linkedin.credentials}</pre></div>}
+                </div>
+            </div>
+            <div className="space-y-2">
+                 <h4 className="font-bold text-sm">Pendientes Pauta</h4>
+                 <pre className="text-sm whitespace-pre-wrap font-sans text-muted-foreground">{data.pendingNotes || '-'}</pre>
+            </div>
+        </div>
+    );
+}
+
+
 export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Task>[] => [
   {
     id: "select",
@@ -95,7 +144,7 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
       <DataTableColumnHeader column={column} title="Título" />
     ),
     cell: ({ row }) => {
-      const canExpand = row.getCanExpand() || (row.original.area === 'Creación de contenido' && row.original.contentDetails);
+      const canExpand = row.getCanExpand() || row.original.area === 'Creación de contenido' || row.original.area === 'Pautas';
       const isExpanded = row.getIsExpanded();
       return (
         <div style={{ paddingLeft: `${row.depth * 1.5}rem` }} className="flex items-center gap-2">
@@ -300,10 +349,13 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
     header: () => null,
     cell: ({ row }) => {
       const task = row.original;
-      if (task.area !== 'Creación de contenido' || !task.contentDetails) {
-        return null;
+      if (task.area === 'Creación de contenido' && task.contentDetails) {
+        return <ContentCreationExpandedContent data={task.contentDetails} />;
       }
-      return <ExpandedContent data={task.contentDetails} />;
+      if (task.area === 'Pautas' && task.adCampaignDetails) {
+        return <AdCampaignExpandedContent data={task.adCampaignDetails} />;
+      }
+      return null;
     },
   },
 ];

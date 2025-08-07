@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Task, User, taskAreas, Project, ContentCreationDetails } from "@/types";
+import { Task, User, taskAreas, Project, ContentCreationDetails, AdCampaignDetails } from "@/types";
 import { users, projects } from "@/lib/data";
 import { DialogFooter } from "../ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -32,6 +32,7 @@ import { es } from "date-fns/locale";
 import React from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { ContentCreationDetailsForm } from "./content-creation-details";
+import { AdCampaignDetailsForm } from "./ad-campaign-details";
 
 
 const contentDetailsSchema = z.object({
@@ -40,6 +41,28 @@ const contentDetailsSchema = z.object({
   postsReadyUntil: z.date().nullable().optional(),
   monthlyDeliverables: z.string().optional(),
   publishingSchedule: z.string().optional(),
+}).optional();
+
+const adCampaignDetailsSchema = z.object({
+    meta: z.object({
+        interaction: z.coerce.number().optional(),
+        messages: z.coerce.number().optional(),
+        credentials: z.string().optional(),
+    }).optional(),
+    tiktok: z.object({
+        interaction: z.coerce.number().optional(),
+        messages: z.coerce.number().optional(),
+        credentials: z.string().optional(),
+    }).optional(),
+    googleAds: z.object({
+        budget: z.coerce.number().optional(),
+        credentials: z.string().optional(),
+    }).optional(),
+    linkedin: z.object({
+        budget: z.coerce.number().optional(),
+        credentials: z.string().optional(),
+    }).optional(),
+    pendingNotes: z.string().optional(),
 }).optional();
 
 const formSchema = z.object({
@@ -52,6 +75,7 @@ const formSchema = z.object({
   area: z.enum(taskAreas).optional(),
   visitDate: z.date().nullable().optional(),
   contentDetails: contentDetailsSchema,
+  adCampaignDetails: adCampaignDetailsSchema,
 });
 
 interface EditTaskFormProps {
@@ -74,6 +98,7 @@ export function EditTaskForm({ task, onUpdateTask, onClose, isAdding = false }: 
       area: task.area,
       visitDate: task.visitDate,
       contentDetails: task.contentDetails ?? {},
+      adCampaignDetails: task.adCampaignDetails ?? {},
     },
   });
 
@@ -93,6 +118,7 @@ export function EditTaskForm({ task, onUpdateTask, onClose, isAdding = false }: 
       area: task.area,
       visitDate: task.visitDate,
       contentDetails: task.contentDetails ?? {},
+      adCampaignDetails: task.adCampaignDetails ?? {},
     });
   }, [task, form]);
 
@@ -312,6 +338,21 @@ export function EditTaskForm({ task, onUpdateTask, onClose, isAdding = false }: 
               <AccordionContent>
                 <div className="space-y-4 pt-2">
                  <ContentCreationDetailsForm form={form} />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        )}
+
+        {watchedArea === 'Pautas' && (
+           <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="ad-campaign-details">
+              <AccordionTrigger className="text-sm font-semibold">
+                Detalles de Pauta
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-4 pt-2">
+                 <AdCampaignDetailsForm form={form} />
                 </div>
               </AccordionContent>
             </AccordionItem>
