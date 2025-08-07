@@ -12,7 +12,7 @@ export type TaskArea = (typeof taskAreas)[number];
 export type ContentCreationDetails = {
   cutoffDateInfo?: string; // "Fecha de Corte"
   videosRecordedUntil?: Date | null; // "Hasta cuando tenemos grabados videos"
-  postsReadyUntil?: Date | null; // "Hasta cuando tenemos post e historias"
+  postsReadyUntil?: Date | null; // "Hasta cuando tenemos post e hsitporias"
   monthlyDeliverables?: string; // "¿Qué le publicamos al mes?"
   publishingSchedule?: string; // "¿Cuando le publicamos?"
 };
@@ -63,4 +63,19 @@ export type User = {
   email: string;
   avatar: string;
   availability: 'Available' | 'Busy' | 'Unavailable';
+};
+
+export type WebProjectType = 'project' | 'retainer';
+
+export type WebProjectStatus = 'En Desarrollo' | 'Mantenimiento' | 'Pausado' | 'Finalizado';
+
+export type WebProject = {
+  id: string;
+  name: string;
+  type: WebProjectType;
+  status: WebProjectStatus;
+  assigneeId: string | null;
+  technologies: string[];
+  dueDate: string | null;
+  liveUrl?: string;
 };
