@@ -31,7 +31,7 @@ export default function TasksPage() {
     const subtasks = allTasks.filter(task => task.parentId === taskId);
     return subtasks.map(subtask => ({
       ...subtask,
-      subRows: getSubtasks(subtask.id, allTasks)
+      subtasks: getSubtasks(subtask.id, allTasks)
     }));
   };
 
@@ -41,8 +41,9 @@ export default function TasksPage() {
 
   const tasksWithSubtasks = topLevelTasks.map(task => ({
     ...task,
-    subRows: getSubtasks(task.id, tasks) // Pass all tasks to find subtasks recursively
+    subtasks: getSubtasks(task.id, tasks) // Pass all tasks to find subtasks recursively
   }));
+
 
   return (
     <div className="flex h-full flex-col">

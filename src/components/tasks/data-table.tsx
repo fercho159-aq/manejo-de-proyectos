@@ -29,8 +29,6 @@ import {
 import { DataTableToolbar } from "./data-table-toolbar";
 import { DataTablePagination } from "../data-table-pagination";
 import { Task } from "@/types";
-import { users, projects } from "@/lib/data";
-import { Input } from "../ui/input";
 
 interface DataTableProps<TData extends Task, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -42,8 +40,6 @@ interface DataTableProps<TData extends Task, TValue> {
 export function DataTable<TData extends Task, TValue>({
   columns,
   data,
-  onUpdateTask,
-  onAddTask,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -63,7 +59,7 @@ export function DataTable<TData extends Task, TValue>({
       expanded,
       globalFilter,
     },
-    getSubRows: (row) => row.subRows,
+    getSubRows: (row) => row.subtasks,
     onExpandedChange: setExpanded,
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -116,19 +112,31 @@ export function DataTable<TData extends Task, TValue>({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                 <React.Fragment key={row.id}>
+                  <TableRow
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      if (cell.column.id === 'expanded-content') return null;
+                      return (
+                        <TableCell key={cell.id}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      )
+                    })}
+                  </TableRow>
+                   {row.getIsExpanded() && (
+                    <TableRow>
+                       {flexRender(
+                          row.getVisibleCells().find(cell => cell.column.id === 'expanded-content')?.column.columnDef.cell,
+                          row.getVisibleCells().find(cell => cell.column.id === 'expanded-content')?.getContext()
+                        )}
+                    </TableRow>
+                  )}
+                </React.Fragment>
               ))
             ) : (
               <TableRow>

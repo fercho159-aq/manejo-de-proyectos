@@ -1,17 +1,19 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Task, User, Project } from "@/types";
+import { Task, User, Project, ContentCreationDetails } from "@/types";
 import { users, projects } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "../data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { ArrowDown, ArrowRight, ArrowUp, CheckCircle, ChevronDown, ChevronRight, Circle, Dot, HelpCircle, XCircle } from "lucide-react";
+import { ArrowDown, ArrowRight, ArrowUp, CheckCircle, ChevronDown, ChevronRight, Circle, Dot, HelpCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
 
 const statuses = [
   { value: "To Do", label: "Por Hacer", icon: Circle },
@@ -29,6 +31,42 @@ const priorities = [
 type ColumnsProps = {
   onUpdateTask: (task: Task) => void;
   onAddTask: (task: Task) => void;
+}
+
+function ExpandedContent({ data }: { data?: ContentCreationDetails }) {
+    if (!data) return null;
+
+    const detailItems = [
+        { label: "Fecha de Corte", value: data.cutoffDateInfo },
+        { label: "Videos grabados hasta", value: data.videosRecordedUntil ? format(new Date(data.videosRecordedUntil), 'PPP', { locale: es }) : '-' },
+        { label: "Posts/Historias hasta", value: data.postsReadyUntil ? format(new Date(data.postsReadyUntil), 'PPP', { locale: es }) : '-' },
+    ];
+    
+    const longTextItems = [
+        { label: "¿Qué le publicamos al mes?", value: data.monthlyDeliverables },
+        { label: "¿Cuándo le publicamos?", value: data.publishingSchedule },
+    ]
+
+    return (
+        <div className="bg-muted/50 p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+                {detailItems.map(item => (
+                    <div key={item.label}>
+                        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{item.label}</h4>
+                        <p className="text-sm">{item.value || '-'}</p>
+                    </div>
+                ))}
+            </div>
+             <div className="space-y-4">
+                 {longTextItems.map(item => (
+                    <div key={item.label}>
+                        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{item.label}</h4>
+                        <pre className="text-sm whitespace-pre-wrap font-sans">{item.value || '-'}</pre>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
 }
 
 export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Task>[] => [
@@ -57,21 +95,25 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
       <DataTableColumnHeader column={column} title="Título" />
     ),
     cell: ({ row }) => {
-      const canExpand = row.getCanExpand();
+      const canExpand = row.getCanExpand() || (row.original.area === 'Creación de contenido' && row.original.contentDetails);
       const isExpanded = row.getIsExpanded();
       return (
-        <div style={{ paddingLeft: `${row.depth * 2}rem` }} className="flex items-center gap-2">
-          {canExpand && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => row.toggleExpanded()}
-              className="h-6 w-6"
-            >
-              {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-            </Button>
-          )}
-          <span>{row.original.title}</span>
+        <div style={{ paddingLeft: `${row.depth * 1.5}rem` }} className="flex items-center gap-2">
+           {row.depth > 0 && <span className="text-muted-foreground">└─</span>}
+           <div className="flex items-center gap-2">
+            {canExpand && (
+                <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => row.toggleExpanded()}
+                className="h-6 w-6"
+                >
+                {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                </Button>
+            )}
+            {!canExpand && <div className="w-6 h-6"/>}
+            <span>{row.original.title}</span>
+          </div>
         </div>
       );
     },
@@ -252,5 +294,26 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} onUpdateTask={onUpdateTask} onAddTask={onAddTask} />,
+  },
+  {
+    id: 'expanded-content',
+    header: () => null,
+    cell: ({ row }) => {
+      if (!row.getIsExpanded()) {
+        return null;
+      }
+      
+      const task = row.original;
+      
+      if (task.area !== 'Creación de contenido' || !task.contentDetails) {
+        return null; // Or render subtasks if needed
+      }
+
+      return (
+        <td colSpan={columns.length}>
+            <ExpandedContent data={task.contentDetails} />
+        </td>
+      );
+    },
   },
 ];
