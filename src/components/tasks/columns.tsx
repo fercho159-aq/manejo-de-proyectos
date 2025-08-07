@@ -299,21 +299,11 @@ export const columns = ({ onUpdateTask, onAddTask }: ColumnsProps): ColumnDef<Ta
     id: 'expanded-content',
     header: () => null,
     cell: ({ row }) => {
-      if (!row.getIsExpanded()) {
+      const task = row.original;
+      if (task.area !== 'Creación de contenido' || !task.contentDetails) {
         return null;
       }
-      
-      const task = row.original;
-      
-      if (task.area !== 'Creación de contenido' || !task.contentDetails) {
-        return null; // Or render subtasks if needed
-      }
-
-      return (
-        <td colSpan={columns.length}>
-            <ExpandedContent data={task.contentDetails} />
-        </td>
-      );
+      return <ExpandedContent data={task.contentDetails} />;
     },
   },
 ];

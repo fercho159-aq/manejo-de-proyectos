@@ -130,10 +130,12 @@ export function DataTable<TData extends Task, TValue>({
                   </TableRow>
                    {row.getIsExpanded() && (
                     <TableRow>
-                       {flexRender(
-                          row.getVisibleCells().find(cell => cell.column.id === 'expanded-content')?.column.columnDef.cell,
-                          row.getVisibleCells().find(cell => cell.column.id === 'expanded-content')?.getContext()
-                        )}
+                        <TableCell colSpan={row.getVisibleCells().length}>
+                           {flexRender(
+                              row.getVisibleCells().find(cell => cell.column.id === 'expanded-content')?.column.columnDef.cell,
+                              row.getVisibleCells().find(cell => cell.column.id === 'expanded-content')?.getContext()
+                            )}
+                        </TableCell>
                     </TableRow>
                   )}
                 </React.Fragment>
