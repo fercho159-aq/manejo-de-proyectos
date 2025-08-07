@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -120,7 +121,7 @@ function ProjectCard({ project, onUpdateProject, onAddTask }: { project: WebProj
                 {project.dueDate && (
                     <CardFooter className="p-4 pt-0">
                         <div className="text-xs text-muted-foreground">
-                            Fecha de entrega: {format(new Date(project.dueDate), 'PPP', { locale: es })}
+                            Fecha de entrega: {format(new Date(project.dueDate.replace(/-/g, '/')), 'PPP', { locale: es })}
                         </div>
                     </CardFooter>
                 )}
@@ -193,3 +194,5 @@ export function ProjectBoard({ projects, onUpdateProject, onAddTask }: ProjectBo
         </div>
     );
 }
+
+    
