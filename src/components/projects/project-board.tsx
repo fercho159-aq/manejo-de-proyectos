@@ -188,7 +188,7 @@ export function ProjectBoard({ projects, onUpdateProject, onAddTask }: ProjectBo
     const retainersList = projects.filter(p => p.type === 'retainer');
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <ProjectColumn title="Proyectos" projects={projectsList} onUpdateProject={onUpdateProject} onAddTask={onAddTask} />
             <ProjectColumn title="Igualas" projects={retainersList} onUpdateProject={onUpdateProject} onAddTask={onAddTask} />
         </div>
