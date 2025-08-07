@@ -7,6 +7,9 @@ import { WebProjectDashboard } from "@/components/projects/web-project-dashboard
 import { webProjects as initialWebProjects } from "@/lib/web-projects-data";
 import { tasks as initialTasks } from "@/lib/data";
 import { WebProject, Task } from "@/types";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DueDateCalendar } from "@/components/projects/due-date-calendar";
+import { ProjectStatusChart } from "@/components/projects/project-status-chart";
 
 export default function ProjectsPage() {
   const [webProjects, setWebProjects] = useState<WebProject[]>(initialWebProjects);
@@ -28,11 +31,33 @@ export default function ProjectsPage() {
       <Header title="Proyectos Web" />
       <div className="flex-1 space-y-6 p-4 pt-6 md:p-8">
         <WebProjectDashboard projects={webProjects} />
-        <ProjectBoard 
-          projects={webProjects} 
-          onUpdateProject={handleUpdateWebProject}
-          onAddTask={handleAddTask}
-        />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="flex flex-col gap-6 lg:col-span-2">
+             <ProjectBoard 
+                projects={webProjects} 
+                onUpdateProject={handleUpdateWebProject}
+                onAddTask={handleAddTask}
+            />
+          </div>
+          <div className="flex flex-col gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Fechas de Entrega</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <DueDateCalendar projects={webProjects} />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Estado de Proyectos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ProjectStatusChart projects={webProjects} />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
