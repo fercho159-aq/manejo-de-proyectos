@@ -9,6 +9,14 @@ export type Project = {
 export const taskAreas = ["Pautas", "Diseño web", "Creación de contenido"] as const;
 export type TaskArea = (typeof taskAreas)[number];
 
+export type ContentCreationDetails = {
+  cutoffDateInfo?: string; // "Fecha de Corte"
+  videosRecordedUntil?: Date | null; // "Hasta cuando tenemos grabados videos"
+  postsReadyUntil?: Date | null; // "Hasta cuando tenemos post e historias"
+  monthlyDeliverables?: string; // "¿Qué le publicamos al mes?"
+  publishingSchedule?: string; // "¿Cuando le publicamos?"
+};
+
 
 export type Task = {
   id: string;
@@ -23,6 +31,7 @@ export type Task = {
   subtasks?: Task[];
   area?: TaskArea;
   visitDate?: Date | null;
+  contentDetails?: ContentCreationDetails;
 };
 
 export type User = {

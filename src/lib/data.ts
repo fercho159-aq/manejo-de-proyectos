@@ -21,7 +21,24 @@ export const tasks: Task[] = [
   { id: 'task-2', title: 'Desarrollar pasarela de pago', projectId: 'proj-1', status: 'In Progress', priority: 'High', assigneeId: 'user-2', estimatedDuration: 24, area: 'Pautas' },
   { id: 'task-3', title: 'Flujo de autenticación de usuario', projectId: 'proj-2', status: 'In Review', priority: 'Medium', assigneeId: 'user-1', estimatedDuration: 12, area: 'Pautas', visitDate: new Date(today.getFullYear(), today.getMonth(), 12) },
   { id: 'task-4', title: 'Implementar historial de transacciones', projectId: 'proj-2', status: 'To Do', priority: 'Medium', assigneeId: null, estimatedDuration: 8, area: 'Pautas' },
-  { id: 'task-5', title: 'Entrenar modelo de NLP', projectId: 'proj-3', status: 'In Progress', priority: 'High', assigneeId: 'user-3', estimatedDuration: 40, area: 'Creación de contenido', visitDate: new Date(today.getFullYear(), today.getMonth(), 21) },
+  { 
+    id: 'task-5', 
+    title: 'Entrenar modelo de NLP', 
+    projectId: 'proj-3', 
+    status: 'In Progress', 
+    priority: 'High', 
+    assigneeId: 'user-3', 
+    estimatedDuration: 40, 
+    area: 'Creación de contenido', 
+    visitDate: new Date(today.getFullYear(), today.getMonth(), 21),
+    contentDetails: {
+      cutoffDateInfo: "Cada 30",
+      videosRecordedUntil: new Date(2024, 7, 8),
+      postsReadyUntil: new Date(2024, 7, 8),
+      monthlyDeliverables: "12 videos\n4 carruseles\n8 post\n1 live",
+      publishingSchedule: "Lunes: Video (preguntas) - Posteo - Frase\nMartes: Video (tendencia) - Carrusel\nMiércoles: Video (preguntas) - Vídeo y Frase\nJueves: (video tendencia) - Vídeo\nViernes: Video (medicamento) - Posteo y Vídeo\nSábado:\nDomingo:\n- Un Live al mes"
+    } 
+  },
   { id: 'task-6', title: 'Integrar interfaz de chat', projectId: 'proj-3', status: 'To Do', priority: 'Medium', assigneeId: null, estimatedDuration: 10, area: 'Diseño web' },
   { id: 'task-7', title: 'Gestión de expedientes de pacientes', projectId: 'proj-4', status: 'Done', priority: 'High', assigneeId: 'user-4', estimatedDuration: 30, actualDuration: 28, area: 'Pautas' },
   { id: 'task-8', title: 'Configurar pipeline de CI/CD', projectId: 'proj-1', status: 'In Progress', priority: 'Low', assigneeId: 'user-3', estimatedDuration: 8, area: 'Pautas', visitDate: new Date(today.getFullYear(), today.getMonth() + 1, 3) },
