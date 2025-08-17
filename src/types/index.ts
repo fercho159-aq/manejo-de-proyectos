@@ -88,4 +88,5 @@ export type Payment = {
     status: 'Pagado' | 'Pendiente' | 'Vencido';
     invoiceId: string;
     paymentPercentage?: 25 | 50 | 75 | 100;
+    area?: TaskArea;
 };

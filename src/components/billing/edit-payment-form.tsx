@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Payment, Project } from "@/types";
+import { Payment, Project, taskAreas } from "@/types";
 import { projects } from "@/lib/data";
 import { DialogFooter } from "../ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -37,6 +37,7 @@ const formSchema = z.object({
   status: z.enum(["Pagado", "Pendiente", "Vencido"]),
   paymentDate: z.date(),
   paymentPercentage: z.coerce.number().optional(),
+  area: z.enum(taskAreas).optional(),
 });
 
 interface EditPaymentFormProps {
@@ -55,6 +56,7 @@ export function EditPaymentForm({ payment, onUpdatePayment, onClose }: EditPayme
       status: payment.status,
       paymentDate: payment.paymentDate,
       paymentPercentage: payment.paymentPercentage,
+      area: payment.area,
     },
   });
 
@@ -144,6 +146,32 @@ export function EditPaymentForm({ payment, onUpdatePayment, onClose }: EditPayme
                 )}
             />
         </div>
+        
+         <FormField
+            control={form.control}
+            name="area"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Área</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione un área" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {taskAreas.map(area => (
+                        <SelectItem key={area} value={area}>{area}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
         <div className="grid grid-cols-2 gap-4">
              <FormField
