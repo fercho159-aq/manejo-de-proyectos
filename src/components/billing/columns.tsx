@@ -147,9 +147,9 @@ export const columns = ({ onUpdatePayment }: ColumnsProps): ColumnDef<Payment>[]
       return (
           <div className="flex items-center gap-2 w-40">
             <Select
-                value={percentage?.toString() ?? ""}
+                value={percentage?.toString() ?? "none"}
                 onValueChange={(value) => {
-                    const newPercentage = value ? parseInt(value, 10) as Payment['paymentPercentage'] : undefined;
+                    const newPercentage = value !== "none" ? parseInt(value, 10) as Payment['paymentPercentage'] : undefined;
                     onUpdatePayment({
                         ...row.original,
                         paymentPercentage: newPercentage,
@@ -161,7 +161,7 @@ export const columns = ({ onUpdatePayment }: ColumnsProps): ColumnDef<Payment>[]
                     <SelectValue placeholder="-" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="">-</SelectItem>
+                    <SelectItem value="none">-</SelectItem>
                     {paymentPercentages.map(p => (
                         <SelectItem key={p.value} value={p.value.toString()} className="capitalize">
                             {p.label}

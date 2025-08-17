@@ -152,14 +152,14 @@ export function EditPaymentForm({ payment, onUpdatePayment, onClose }: EditPayme
                 render={({ field }) => (
                 <FormItem>
                     <FormLabel>Progreso Pago</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
+                    <Select onValueChange={(value) => field.onChange(value === "none" ? undefined : parseInt(value))} value={field.value?.toString() ?? "none"}>
                     <FormControl>
                         <SelectTrigger>
                         <SelectValue placeholder="-" />
                         </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                        <SelectItem value="">-</SelectItem>
+                        <SelectItem value="none">-</SelectItem>
                         <SelectItem value="25">25%</SelectItem>
                         <SelectItem value="50">50%</SelectItem>
                         <SelectItem value="75">75%</SelectItem>
