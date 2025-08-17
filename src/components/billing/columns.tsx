@@ -12,6 +12,7 @@ import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Circle, AlertTriangle, CheckCircle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Progress } from "../ui/progress";
 
 type ColumnsProps = {
   onUpdatePayment: (payment: Payment) => void;
@@ -21,6 +22,13 @@ const statuses = [
   { value: "Pagado", label: "Pagado", icon: CheckCircle, className: "text-green-600 border-green-300 focus:ring-green-500" },
   { value: "Pendiente", label: "Pendiente", icon: Circle, className: "text-yellow-600 border-yellow-300 focus:ring-yellow-500" },
   { value: "Vencido", label: "Vencido", icon: AlertTriangle, className: "text-red-600 border-red-300 focus:ring-red-500" },
+];
+
+const paymentPercentages = [
+    { value: 25, label: "25%" },
+    { value: 50, label: "50%" },
+    { value: 75, label: "75%" },
+    { value: 100, label: "100%" },
 ];
 
 export const columns = ({ onUpdatePayment }: ColumnsProps): ColumnDef<Payment>[] => [
@@ -125,6 +133,47 @@ export const columns = ({ onUpdatePayment }: ColumnsProps): ColumnDef<Payment>[]
       );
     },
     filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
+  },
+  {
+    accessorKey: "paymentPercentage",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Progreso de Pago" />
+    ),
+    cell: ({ row }) => {
+      const percentage = row.original.paymentPercentage;
+      
+      return (
+          <div className="flex items-center gap-2 w-40">
+            <Select
+                value={percentage?.toString() ?? ""}
+                onValueChange={(value) => {
+                    const newPercentage = value ? parseInt(value, 10) as Payment['paymentPercentage'] : undefined;
+                    onUpdatePayment({
+                        ...row.original,
+                        paymentPercentage: newPercentage,
+                        status: newPercentage === 100 ? 'Pagado' : row.original.status,
+                    });
+                }}
+            >
+                <SelectTrigger className="w-24 capitalize">
+                    <SelectValue placeholder="-" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="">-</SelectItem>
+                    {paymentPercentages.map(p => (
+                        <SelectItem key={p.value} value={p.value.toString()} className="capitalize">
+                            {p.label}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+            <Progress value={percentage} className="flex-1 h-2" />
+        </div>
+      );
+    },
+     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },
   },

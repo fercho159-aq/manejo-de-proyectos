@@ -67,9 +67,9 @@ export const tasks: Task[] = [
 
 
 export const payments: Payment[] = [
-    { id: 'pay-1', projectId: 'proj-1', amount: 5000, paymentDate: new Date(2024, 6, 1), status: 'Pagado', invoiceId: 'INV-001' },
-    { id: 'pay-2', projectId: 'proj-2', amount: 7500, paymentDate: new Date(2024, 6, 5), status: 'Pagado', invoiceId: 'INV-002' },
-    { id: 'pay-3', projectId: 'proj-3', amount: 3000, paymentDate: new Date(2024, 7, 1), status: 'Pendiente', invoiceId: 'INV-003' },
+    { id: 'pay-1', projectId: 'proj-1', amount: 5000, paymentDate: new Date(2024, 6, 1), status: 'Pagado', invoiceId: 'INV-001', paymentPercentage: 100 },
+    { id: 'pay-2', projectId: 'proj-2', amount: 7500, paymentDate: new Date(2024, 6, 5), status: 'Pagado', invoiceId: 'INV-002', paymentPercentage: 100 },
+    { id: 'pay-3', projectId: 'proj-3', amount: 3000, paymentDate: new Date(2024, 7, 1), status: 'Pendiente', invoiceId: 'INV-003', paymentPercentage: 50 },
     { id: 'pay-4', projectId: 'proj-4', amount: 12000, paymentDate: new Date(2024, 5, 20), status: 'Vencido', invoiceId: 'INV-004' },
-    { id: 'pay-5', projectId: 'proj-1', amount: 5000, paymentDate: new Date(2024, 7, 1), status: 'Pagado', invoiceId: 'INV-005' },
+    { id: 'pay-5', projectId: 'proj-1', amount: 5000, paymentDate: new Date(2024, 7, 1), status: 'Pendiente', invoiceId: 'INV-005', paymentPercentage: 25 },
 ];

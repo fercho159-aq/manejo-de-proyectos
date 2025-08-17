@@ -87,4 +87,5 @@ export type Payment = {
     paymentDate: Date;
     status: 'Pagado' | 'Pendiente' | 'Vencido';
     invoiceId: string;
+    paymentPercentage?: 25 | 50 | 75 | 100;
 };

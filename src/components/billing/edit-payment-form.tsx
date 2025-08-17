@@ -36,6 +36,7 @@ const formSchema = z.object({
   amount: z.coerce.number().min(0, "El monto no puede ser negativo"),
   status: z.enum(["Pagado", "Pendiente", "Vencido"]),
   paymentDate: z.date(),
+  paymentPercentage: z.coerce.number().optional(),
 });
 
 interface EditPaymentFormProps {
@@ -53,6 +54,7 @@ export function EditPaymentForm({ payment, onUpdatePayment, onClose }: EditPayme
       amount: payment.amount,
       status: payment.status,
       paymentDate: payment.paymentDate,
+      paymentPercentage: payment.paymentPercentage,
     },
   });
 
@@ -60,6 +62,7 @@ export function EditPaymentForm({ payment, onUpdatePayment, onClose }: EditPayme
     const updatedPayment: Payment = {
       ...payment,
       ...values,
+      paymentPercentage: values.paymentPercentage as Payment['paymentPercentage']
     };
     onUpdatePayment(updatedPayment);
   }
@@ -142,45 +145,71 @@ export function EditPaymentForm({ payment, onUpdatePayment, onClose }: EditPayme
             />
         </div>
 
-        <FormField
-          control={form.control}
-          name="paymentDate"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Fecha de Pago</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
-                      )}
-                    >
-                      {field.value ? (
-                        format(field.value, "PPP", { locale: es })
-                      ) : (
-                        <span>Seleccione una fecha</span>
-                      )}
-                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={field.value}
-                    onSelect={field.onChange}
-                    initialFocus
-                    locale={es}
-                  />
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-2 gap-4">
+             <FormField
+                control={form.control}
+                name="paymentPercentage"
+                render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Progreso Pago</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
+                    <FormControl>
+                        <SelectTrigger>
+                        <SelectValue placeholder="-" />
+                        </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                        <SelectItem value="">-</SelectItem>
+                        <SelectItem value="25">25%</SelectItem>
+                        <SelectItem value="50">50%</SelectItem>
+                        <SelectItem value="75">75%</SelectItem>
+                        <SelectItem value="100">100%</SelectItem>
+                    </SelectContent>
+                    </Select>
+                    <FormMessage />
+                </FormItem>
+                )}
+            />
+            <FormField
+            control={form.control}
+            name="paymentDate"
+            render={({ field }) => (
+                <FormItem className="flex flex-col">
+                <FormLabel>Fecha de Pago</FormLabel>
+                <Popover>
+                    <PopoverTrigger asChild>
+                    <FormControl>
+                        <Button
+                        variant={"outline"}
+                        className={cn(
+                            "w-full pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                        )}
+                        >
+                        {field.value ? (
+                            format(field.value, "PPP", { locale: es })
+                        ) : (
+                            <span>Seleccione una fecha</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                    </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        initialFocus
+                        locale={es}
+                    />
+                    </PopoverContent>
+                </Popover>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+        </div>
         
         <DialogFooter>
           <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
