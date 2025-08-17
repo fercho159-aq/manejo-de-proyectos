@@ -12,13 +12,17 @@ import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Circle, AlertTriangle, CheckCircle } from "lucide-react";
 
+type ColumnsProps = {
+  onUpdatePayment: (payment: Payment) => void;
+}
+
 const statuses = [
   { value: "Pagado", label: "Pagado", icon: CheckCircle, className: "text-green-600" },
   { value: "Pendiente", label: "Pendiente", icon: Circle, className: "text-yellow-600" },
   { value: "Vencido", label: "Vencido", icon: AlertTriangle, className: "text-red-600" },
 ];
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns = ({ onUpdatePayment }: ColumnsProps): ColumnDef<Payment>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -104,6 +108,6 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => <DataTableRowActions row={row} onUpdatePayment={onUpdatePayment} />,
   },
 ];
