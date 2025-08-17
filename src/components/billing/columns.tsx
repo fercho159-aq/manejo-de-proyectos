@@ -11,15 +11,16 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Circle, AlertTriangle, CheckCircle } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 type ColumnsProps = {
   onUpdatePayment: (payment: Payment) => void;
 }
 
 const statuses = [
-  { value: "Pagado", label: "Pagado", icon: CheckCircle, className: "text-green-600" },
-  { value: "Pendiente", label: "Pendiente", icon: Circle, className: "text-yellow-600" },
-  { value: "Vencido", label: "Vencido", icon: AlertTriangle, className: "text-red-600" },
+  { value: "Pagado", label: "Pagado", icon: CheckCircle, className: "text-green-600 border-green-300 focus:ring-green-500" },
+  { value: "Pendiente", label: "Pendiente", icon: Circle, className: "text-yellow-600 border-yellow-300 focus:ring-yellow-500" },
+  { value: "Vencido", label: "Vencido", icon: AlertTriangle, className: "text-red-600 border-red-300 focus:ring-red-500" },
 ];
 
 export const columns = ({ onUpdatePayment }: ColumnsProps): ColumnDef<Payment>[] => [
@@ -91,15 +92,36 @@ export const columns = ({ onUpdatePayment }: ColumnsProps): ColumnDef<Payment>[]
     cell: ({ row }) => {
       const status = statuses.find(s => s.value === row.original.status);
       if (!status) return null;
+
       return (
-        <Badge variant="outline" className={cn("capitalize", {
-            'border-green-300 text-green-700': status.value === 'Pagado',
-            'border-yellow-300 text-yellow-700': status.value === 'Pendiente',
-            'border-red-300 text-red-700': status.value === 'Vencido',
-        })}>
-          <status.icon className="mr-2 h-4 w-4" />
-          {status.label}
-        </Badge>
+        <Select
+            value={row.original.status}
+            onValueChange={(value) => {
+                onUpdatePayment({
+                    ...row.original,
+                    status: value as Payment['status'],
+                });
+            }}
+        >
+            <SelectTrigger className={cn("w-36 capitalize", status.className)}>
+                <SelectValue asChild>
+                    <div className="flex items-center gap-2">
+                        <status.icon className="h-4 w-4" />
+                        <span>{status.label}</span>
+                    </div>
+                </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+                {statuses.map(s => (
+                    <SelectItem key={s.value} value={s.value} className="capitalize">
+                        <div className="flex items-center gap-2">
+                            <s.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+                            <span>{s.label}</span>
+                        </div>
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
       );
     },
     filterFn: (row, id, value) => {
