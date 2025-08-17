@@ -79,3 +79,12 @@ export type WebProject = {
   dueDate: string | null;
   liveUrl?: string;
 };
+
+export type Payment = {
+    id: string;
+    projectId: string;
+    amount: number;
+    paymentDate: Date;
+    status: 'Pagado' | 'Pendiente' | 'Vencido';
+    invoiceId: string;
+};

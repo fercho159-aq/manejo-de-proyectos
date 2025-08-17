@@ -1,4 +1,4 @@
-import type { Project, User, Task } from '@/types';
+import type { Project, User, Task, Payment } from '@/types';
 
 export const users: User[] = [
   { id: 'user-1', name: 'Alejandro Hernández', email: 'alejandro@mawsoluciones.com', avatar: 'https://placehold.co/100x100.png', availability: 'Available' },
@@ -63,4 +63,13 @@ export const tasks: Task[] = [
   { id: 'task-6', title: 'Integrar interfaz de chat', projectId: 'proj-3', status: 'To Do', priority: 'Medium', assigneeId: null, estimatedDuration: 10, area: 'Diseño web' },
   { id: 'task-7', title: 'Gestión de expedientes de pacientes', projectId: 'proj-4', status: 'Done', priority: 'High', assigneeId: 'user-4', estimatedDuration: 30, actualDuration: 28, area: 'Pautas' },
   { id: 'task-8', title: 'Configurar pipeline de CI/CD', projectId: 'proj-1', status: 'In Progress', priority: 'Low', assigneeId: 'user-3', estimatedDuration: 8, area: 'Pautas', visitDate: new Date(today.getFullYear(), today.getMonth() + 1, 3) },
+];
+
+
+export const payments: Payment[] = [
+    { id: 'pay-1', projectId: 'proj-1', amount: 5000, paymentDate: new Date(2024, 6, 1), status: 'Pagado', invoiceId: 'INV-001' },
+    { id: 'pay-2', projectId: 'proj-2', amount: 7500, paymentDate: new Date(2024, 6, 5), status: 'Pagado', invoiceId: 'INV-002' },
+    { id: 'pay-3', projectId: 'proj-3', amount: 3000, paymentDate: new Date(2024, 7, 1), status: 'Pendiente', invoiceId: 'INV-003' },
+    { id: 'pay-4', projectId: 'proj-4', amount: 12000, paymentDate: new Date(2024, 5, 20), status: 'Vencido', invoiceId: 'INV-004' },
+    { id: 'pay-5', projectId: 'proj-1', amount: 5000, paymentDate: new Date(2024, 7, 1), status: 'Pagado', invoiceId: 'INV-005' },
 ];

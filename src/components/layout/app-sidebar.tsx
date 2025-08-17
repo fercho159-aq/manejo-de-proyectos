@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Bot, FolderKanban, Home, ListTodo, Users } from 'lucide-react';
+import { Bot, FolderKanban, Home, ListTodo, Users, CreditCard } from 'lucide-react';
 
 import {
   Sidebar,
@@ -24,6 +24,7 @@ export function AppSidebar() {
     { href: '/tasks', label: 'Tareas', icon: ListTodo },
     { href: '/users', label: 'Usuarios', icon: Users },
     { href: '/projects', label: 'Proyectos', icon: FolderKanban },
+    { href: '/billing', label: 'Facturación', icon: CreditCard },
   ];
 
   return (
